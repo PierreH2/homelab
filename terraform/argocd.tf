@@ -10,3 +10,7 @@ resource "helm_release" "argo_cd" {
   #   file("argocd-values.yaml")
   # ]
 }
+
+resource "kubernetes_manifest" "guestbook" {
+  manifest = yamldecode(file("/home/pierre/homelab/homelab/applications/argocd_application.yaml"))
+}
