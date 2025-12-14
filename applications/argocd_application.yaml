@@ -6,7 +6,7 @@ metadata:
 spec:
   project: default
   source:
-    repoURL: https://github.com/lm-academy/argocd-example-apps.git
+    repoURL: https://github.com/PierreH2/argocd-example-apps.git
     targetRevision: HEAD
     path: guestbook
   destination:
