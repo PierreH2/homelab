@@ -4,13 +4,17 @@ metadata:
   name: guestbook
   namespace: argocd
 spec:
+  
+  project: default
+
   source:
-    repoURL: https://github.com/<your-github-username>/argocd-example-apps.git
+    repoURL: https://github.com/PierreH2/argocd-example-apps.git
     targetRevision: HEAD
     path: helm-guestbook
     helm:
       valueFiles:
         - values.yaml
+
   destination:
     server: https://kubernetes.default.svc
     namespace: default

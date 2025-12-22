@@ -33,4 +33,4 @@ terraform -chdir="$TF_DIR" plan -out "$TF_DIR/plan.out"
 echo "[INFO] Application du plan..."
 terraform -chdir="$TF_DIR" apply plan.out
 
-echo "[OK] Namespace 'argocd' créé avec succès 🎉"
+echo "[DONE]"

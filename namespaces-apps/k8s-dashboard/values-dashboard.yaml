@@ -1,0 +1,6 @@
+service:
+  annotations:
+    traefik.ingress.kubernetes.io/service.serversscheme: https
+    traefik.ingress.kubernetes.io/service.insecureSkipVerify: "true"
+
+protocolHttp: false
