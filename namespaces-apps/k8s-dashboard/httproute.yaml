@@ -4,17 +4,16 @@ metadata:
   name: kubernetes-dashboard
   namespace: k8s-dashboard
 spec:
+  hostnames:
+    - dashboard.lab.local
   parentRefs:
     - name: traefik-gateway
       namespace: traefik
-  hostnames:
-    - dashboard.lab.local
   rules:
     - matches:
         - path:
             type: PathPrefix
             value: /
       backendRefs:
-        - name: kubernetes-dashboard
+        - name: kubernetes-dashboard-kong-proxy
           port: 443
-          weight: 1
