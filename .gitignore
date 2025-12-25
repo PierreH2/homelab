@@ -5,3 +5,11 @@
 *.tfstate.*
 *.plan
 *.terraform.lock.*
+
+*.key
+*.crt
+**/*.key
+**/*.crt
+scripts/certificate/*.crt
+scripts/certificate/*.key
+

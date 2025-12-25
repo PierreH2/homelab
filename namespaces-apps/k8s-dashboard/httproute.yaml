@@ -5,10 +5,11 @@ metadata:
   namespace: k8s-dashboard
 spec:
   hostnames:
-    - dashboard.lab.local
+    - dashboard.piron.homelab
   parentRefs:
     - name: traefik-gateway
       namespace: traefik
+      sectionName: https
   rules:
     - matches:
         - path:
