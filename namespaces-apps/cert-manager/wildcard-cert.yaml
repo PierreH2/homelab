@@ -2,7 +2,7 @@ apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
   name: piron-homelab-wildcard
-  namespace: traefik
+  namespace: envoy-gateway-system
 spec:
   secretName: piron-homelab-wildcard-tls
   commonName: "*.piron.homelab"
