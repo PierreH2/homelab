@@ -9,9 +9,9 @@ spec:
   project: default
 
   source:
-    repoURL: https://github.com/PierreH2/homelab/namespaces-apps/envoy-gateway-system/config.git
+    repoURL: https://github.com/PierreH2/homelab.git
     targetRevision: main
-    path: namespaces-apps/envoy-gateway-system
+    path: namespaces-apps/envoy-gateway-system/config
 
   destination:
     server: https://kubernetes.default.svc
