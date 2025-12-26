@@ -1,0 +1,4 @@
+# Ignore les templates Helm / YAML templatisés
+*.tpl linguist-vendored
+*.yaml.tpl linguist-vendored
+charts/** linguist-vendored

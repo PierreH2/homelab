@@ -11,7 +11,7 @@ spec:
   source:
     repoURL: https://github.com/envoyproxy/gateway
     targetRevision: v1.0.0
-    path: config/install/standard
+    path: manifests/install/standard
 
   destination:
     server: https://kubernetes.default.svc
@@ -23,7 +23,7 @@ spec:
       selfHeal: true
     syncOptions:
       - CreateNamespace=true
-
+      
 ---
 
 apiVersion: argoproj.io/v1alpha1
