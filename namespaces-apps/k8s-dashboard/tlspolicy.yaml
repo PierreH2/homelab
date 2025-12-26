@@ -1,0 +1,12 @@
+apiVersion: gateway.networking.k8s.io/v1alpha3
+kind: BackendTLSPolicy
+metadata:
+  name: kubernetes-dashboard-backend-tls
+  namespace: k8s-dashboard
+spec:
+  targetRef:
+    group: ""
+    kind: Service
+    name: kubernetes-dashboard-kong-proxy
+  tls:
+    insecureSkipVerify: true
