@@ -5,7 +5,7 @@ Collection de manifests, charts et scripts pour déployer et gérer mon homelab 
 ## But
 Organiser les applications (Argo Rollouts, cert-manager, Grafana, Prometheus, Traefik, MetalLB, etc.), l'infrastructure Terraform et les scripts d'automatisation pour déploiement reproductible.
 
-# TO DO / Historique
+## TO DO / Historique
 
 - [x] Installer Arch linux
 - [x] Installer K3S
