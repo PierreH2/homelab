@@ -7,8 +7,8 @@ spec:
   hostnames:
     - dashboard.piron.homelab
   parentRefs:
-    - name: traefik-gateway
-      namespace: traefik
+    - name: eg
+      namespace: envoy-gateway-system
       sectionName: https
   rules:
     - matches:

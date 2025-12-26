@@ -3,48 +3,19 @@ kind: Application
 metadata:
   name: envoy-gateway
   namespace: argocd
-  annotations:
-    argocd.argoproj.io/sync-wave: "1"
 spec:
   project: default
-
   source:
-    repoURL: https://github.com/envoyproxy/gateway
-    targetRevision: v1.0.0
-    path: manifests/install/standard
-
+    chart: gateway-helm
+    repoURL: docker.io/envoyproxy
+    targetRevision: v1.6.1
   destination:
-    server: https://kubernetes.default.svc
     namespace: envoy-gateway-system
-
+    server: https://kubernetes.default.svc
   syncPolicy:
+    syncOptions:
+    - CreateNamespace=true
+    - ServerSideApply=true
     automated:
       prune: true
-      selfHeal: true
-    syncOptions:
-      - CreateNamespace=true
-      
----
-
-apiVersion: argoproj.io/v1alpha1
-kind: Application
-metadata:
-  name: envoy-gateway-config
-  namespace: argocd
-  annotations:
-    argocd.argoproj.io/sync-wave: "2"
-spec:
-  project: default
-
-  source:
-    repoURL: https://github.com/PierreH2/namespaces-apps/envoy-gateway-system/config.git
-    targetRevision: main
-    path: envoy-gateway-config
-
-  destination:
-    server: https://kubernetes.default.svc
-    namespace: envoy-gateway-system
-
-  syncPolicy:
-    automated:
       selfHeal: true

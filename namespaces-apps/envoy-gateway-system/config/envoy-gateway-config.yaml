@@ -1,13 +1,17 @@
-config:
-  envoyGateway:
-    gateway:
-      controllerName: gateway.envoyproxy.io/gatewayclass-controller
-
-gateway:
-  enabled: true
-  name: envoy-gateway
-  gatewayClassName: envoy-gateway
-
+apiVersion: gateway.networking.k8s.io/v1
+kind: GatewayClass
+metadata:
+  name: eg
+spec:
+  controllerName: gateway.envoyproxy.io/gatewayclass-controller
+---
+apiVersion: gateway.networking.k8s.io/v1
+kind: Gateway
+metadata:
+  name: eg
+  namespace: envoy-gateway-system
+spec:
+  gatewayClassName: eg
   listeners:
     - name: http
       protocol: HTTP
