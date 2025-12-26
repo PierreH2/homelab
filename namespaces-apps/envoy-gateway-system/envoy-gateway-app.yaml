@@ -37,7 +37,7 @@ spec:
   project: default
 
   source:
-    repoURL: https://github.com/PierreH2/namespaces-apps/envoy-gateway-system/gateway.yaml
+    repoURL: https://github.com/PierreH2/namespaces-apps/envoy-gateway-system/config.git
     targetRevision: main
     path: envoy-gateway-config
 
