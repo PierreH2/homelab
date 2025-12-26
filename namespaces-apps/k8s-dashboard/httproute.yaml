@@ -17,25 +17,24 @@ spec:
             value: /
       backendRefs:
         - name: kubernetes-dashboard-kong-proxy
-          port: 443
+          port: 80
 ---
-###
-apiVersion: gateway.networking.k8s.io/v1
-kind: BackendTLSPolicy
-metadata:
-  name: kubernetes-dashboard-tls
-  namespace: k8s-dashboard
-spec:
-  targetRefs:
-    - group: ""
-      kind: Service
-      name: kubernetes-dashboard-kong-proxy
-      sectionName: kong-proxy-tls
+# apiVersion: gateway.networking.k8s.io/v1
+# kind: BackendTLSPolicy
+# metadata:
+#   name: kubernetes-dashboard-tls
+#   namespace: k8s-dashboard
+# spec:
+#   targetRefs:
+#     - group: ""
+#       kind: Service
+#       name: kubernetes-dashboard-kong-proxy
+#       sectionName: kong-proxy-tls
 
-  validation:
-    hostname: kubernetes-dashboard-kong-proxy.k8s-dashboard.svc.cluster.local
-    wellKnownCACertificates: System
-###
+#   validation:
+#     hostname: kubernetes-dashboard-kong-proxy.k8s-dashboard.svc.cluster.local
+#     wellKnownCACertificates: System
+
 
 
 

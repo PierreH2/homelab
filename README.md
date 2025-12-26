@@ -5,6 +5,22 @@ Collection de manifests, charts et scripts pour déployer et gérer mon homelab 
 ## But
 Organiser les applications (Argo Rollouts, cert-manager, Grafana, Prometheus, Traefik, MetalLB, etc.), l'infrastructure Terraform et les scripts d'automatisation pour déploiement reproductible.
 
+# TO DO / Historique
+
+- [x] Installer Arch linux
+- [x] Installer K3S
+- [x] Monter un subvolume NAS (Samba)
+- [x] Déployer ArgoCD & ArgoCD rollouts
+- [x] Déployer mes applications via plusieurs solutions: GitOps, Terraform et Kustomize
+- [x] Déployer une gateway API kubernetes Traefik + cert manager => Limite Traefik
+- [x] [correctif] Déployer une gateway API kubernetes Envoy
+- [x] Exposer mes application via route http
+- [x] Déployer un serveur DNS
+- [ ] Sécuriser l'exposition sur internet
+- [x] Monitoring Prometheus + Grafana
+- [ ] Déployer des runners GitHub Actions sur mon cluster kubernetes
+- [ ] Migrer sur istio pour faire du service Mesh
+
 ## Arborescence principale
 - namespaces-apps/ — kustomize / apps par namespace (charts embarqués pour reproducibilité)
 - scripts/ — utilitaires (deploy, terraform, certificates, port-forward)
@@ -69,3 +85,5 @@ Les applications déployées :
 - Argo-rollouts : via helm + kustomize (kubectl kustomize . --enable-helm | kubectl apply -f -)
 - Traeffik : via helm + kustomize (kubectl kustomize . --enable-helm | kubectl apply -f -)*
 - Prometheus : via ArgoCD
+
+
