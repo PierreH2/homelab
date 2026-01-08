@@ -13,13 +13,20 @@ Organiser les applications (Argo Rollouts, cert-manager, Grafana, Prometheus, Tr
 - [x] Déployer ArgoCD & ArgoCD rollouts
 - [x] Déployer mes applications via plusieurs solutions: GitOps, Terraform et Kustomize
 - [x] Déployer une gateway API kubernetes Traefik + cert manager => Limite Traefik
-- [x] [correctif] Déployer une gateway API kubernetes Envoy
+- [x] (correctif) Déployer une gateway API kubernetes Envoy
 - [x] Exposer mes application via route http
 - [x] Déployer un serveur DNS
 - [ ] Sécuriser l'exposition sur internet
 - [x] Monitoring Prometheus + Grafana
 - [ ] Déployer des runners GitHub Actions sur mon cluster kubernetes
 - [ ] Migrer sur istio pour faire du service Mesh
+
+## Gateway Traefik issue 
+La gateway kubernetes Traefik ne gère pas le crd backendtlspolicies et ne permet donc pas la connection en tls de la gateway aux pods. Traefik gère uniquement la connection en tls avec le front.
+
+## DNS
+La bbox ne permet pas de mofidier le DNS principal pour des raisons de sécurité. Ainsi, le serveur DNS (bind) doit etre ajouté en DNS primaire sur chacune des machines.
+L'alternative serait de modifier localement sur chaque machine le fichier /etc/hosts si linux ou C:\Windows\System32\drivers\etc\hosts si windows.
 
 ## Arborescence principale
 - namespaces-apps/ — kustomize / apps par namespace (charts embarqués pour reproducibilité)

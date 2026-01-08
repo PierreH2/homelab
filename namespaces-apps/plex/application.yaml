@@ -1,0 +1,30 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: plex
+  namespace: argocd
+spec:
+  project: default
+
+  sources:
+    - repoURL: https://k8s-home-lab.github.io/helm-charts/
+      chart: plex
+      targetRevision: "*"
+      helm:
+        valueFiles:
+          - $values/namespaces-apps/plex/values.yaml
+
+    - repoURL: https://github.com/PierreH2/homelab.git
+      targetRevision: main
+      ref: values
+
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: plex
+
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true

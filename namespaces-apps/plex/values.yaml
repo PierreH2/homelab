@@ -1,0 +1,40 @@
+## values.yaml pour plex
+replicaCount: 1
+
+image:
+  repository: ghcr.io/linuxserver/plex
+  pullPolicy: IfNotPresent
+  tag: latest
+
+podSecurityContext:
+  fsGroup: 1000
+  runAsUser: 1000
+
+service:
+  type: ClusterIP
+  port: 32400
+
+persistence:
+  config:
+    enabled: true
+    hostPath: /data/nas/public/plex/config
+  media:
+    enabled: true
+    hostPath: /data/nas/public/plex/media
+
+resources:
+  limits:
+    cpu: "2"
+    memory: "4Gi"
+
+env:
+  - name: TZ
+    value: "Europe/Paris"
+  - name: PLEX_CLAIM
+    value: "claim-JUPaZaC2hLVnuDpmQyTv"
+nodeSelector:
+  plex: "true"
+
+tolerations: []
+
+affinity: {}
