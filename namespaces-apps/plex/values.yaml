@@ -5,7 +5,7 @@ image:
 
 env:
   TZ: Europe/Paris
-  PLEX_CLAIM: claim-XXXXXXXX   # ⚠️ token valide 4 min
+  PLEX_CLAIM: claim-2oKQgUagQkXJvXHX71Xm  
 
 service:
   type: ClusterIP
