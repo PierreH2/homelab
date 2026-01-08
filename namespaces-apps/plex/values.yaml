@@ -1,14 +1,11 @@
-## values.yaml pour plex
-replicaCount: 1
-
 image:
   repository: ghcr.io/linuxserver/plex
-  pullPolicy: IfNotPresent
   tag: latest
+  pullPolicy: IfNotPresent
 
-podSecurityContext:
-  fsGroup: 1000
-  runAsUser: 1000
+env:
+  TZ: Europe/Paris
+  PLEX_CLAIM: claim-XXXXXXXX   # ⚠️ token valide 4 min
 
 service:
   type: ClusterIP
@@ -17,24 +14,24 @@ service:
 persistence:
   config:
     enabled: true
-    hostPath: /data/nas/public/plex/config
+    type: pvc
+    accessMode: ReadWriteOnce
+    size: 10Gi
+    storageClass: local-path
+    existingClaim: ""
+
   media:
     enabled: true
-    hostPath: /data/nas/public/plex/media
+    type: pvc
+    accessMode: ReadWriteOnce
+    size: 50Gi
+    storageClass: local-path
+    existingClaim: ""
 
 resources:
   limits:
-    cpu: "2"
-    memory: "4Gi"
+    cpu: 2
+    memory: 4Gi
 
-env:
-  - name: TZ
-    value: "Europe/Paris"
-  - name: PLEX_CLAIM
-    value: "claim-JUPaZaC2hLVnuDpmQyTv"
-nodeSelector:
-  plex: "true"
-
-tolerations: []
-
-affinity: {}
+#nodeSelector:
+#  plex: "true"

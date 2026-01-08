@@ -17,6 +17,7 @@ spec:
     - repoURL: https://github.com/PierreH2/homelab.git
       targetRevision: main
       ref: values
+      path: namespaces-apps/plex 
 
   destination:
     server: https://kubernetes.default.svc
