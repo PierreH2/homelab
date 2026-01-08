@@ -7,9 +7,21 @@ env:
   TZ: Europe/Paris
   PLEX_CLAIM: claim-2oKQgUagQkXJvXHX71Xm  
 
+controller:
+  enabled: true
+  ports:
+    main:
+      enabled: true
+      port: 32400
+      protocol: TCP
+
 service:
-  type: ClusterIP
-  port: 32400
+  main:
+    enabled: true
+    type: ClusterIP
+    ports:
+      main:
+        port: 32400
 
 persistence:
   config:
