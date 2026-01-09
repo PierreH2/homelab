@@ -1,4 +1,10 @@
-# Ignore les templates Helm / YAML templatisés
-*.tpl linguist-vendored
-*.yaml.tpl linguist-vendored
+# Helm charts = vendored
 charts/** linguist-vendored
+
+# (optionnel) Helm templates uniquement dans charts
+charts/**/*.tpl linguist-vendored
+charts/**/*.yaml linguist-vendored
+charts/**/*.yml linguist-vendored
+
+*.yaml linguist-language=YAML
+*.yml  linguist-language=YAML
