@@ -12,10 +12,10 @@ metadata:
   name: letsencrypt-ovh-prod
 spec:
   acme:
-    email: admin@piron-tech.com
+    email: "pierre.h001002@gmail.com"
     server: https://acme-v02.api.letsencrypt.org/directory
     privateKeySecretRef:
-      name: letsencrypt-ovh-prod-key
+      name: letsencrypt-ovh-prod-account-key
     solvers:
       - dns01:
           webhook:
@@ -23,13 +23,8 @@ spec:
             solverName: ovh
             config:
               endpoint: ovh-eu
-              applicationKeySecretRef:
-                name: ovh-dns-credentials
-                key: applicationKey
-              applicationSecretSecretRef:
+              applicationKey: "3c898652dd8634ba"
+              consumerKey: "360fc2978b5c9d379076ec08eff57294"
+              applicationSecretRef:
                 name: ovh-dns-credentials
                 key: applicationSecret
-              consumerKeySecretRef:
-                name: ovh-dns-credentials
-                key: consumerKey
-
