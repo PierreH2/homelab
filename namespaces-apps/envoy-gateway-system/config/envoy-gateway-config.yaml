@@ -27,7 +27,7 @@ spec:
         mode: Terminate
         certificateRefs:
           - kind: Secret
-            name: piron-homelab-wildcard-tls
+            name: wildcard-piron-tech-tls
       allowedRoutes:
         namespaces:
           from: All

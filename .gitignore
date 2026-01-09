@@ -13,3 +13,4 @@
 scripts/certificate/*.crt
 scripts/certificate/*.key
 
+*secret*

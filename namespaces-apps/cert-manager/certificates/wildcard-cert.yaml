@@ -1,0 +1,29 @@
+# apiVersion: cert-manager.io/v1
+# kind: Certificate
+# metadata:
+#   name: piron-homelab-wildcard
+#   namespace: envoy-gateway-system
+# spec:
+#   secretName: piron-homelab-wildcard-tls
+#   commonName: "*.piron.homelab"
+#   dnsNames:
+#     - "*.piron.homelab"
+#   duration: 2160h
+#   renewBefore: 360h
+#   issuerRef:
+#     name: piron-homelab-ca
+#     kind: ClusterIssuer   
+# ---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: wildcard-piron-tech
+  namespace: envoy-gateway-system
+spec:
+  secretName: wildcard-piron-tech-tls
+  issuerRef:
+    name: letsencrypt-ovh-prod
+    kind: ClusterIssuer
+  dnsNames:
+  - piron-tech.com
+  - "*.piron-tech.com"
