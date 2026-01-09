@@ -30,15 +30,16 @@ persistence:
     accessMode: ReadWriteOnce
     size: 10Gi
     storageClass: local-path
-    existingClaim: ""
+    mountPath: /config
 
   media:
     enabled: true
     type: pvc
     accessMode: ReadWriteOnce
-    size: 50Gi
+    size: 2Ti
     storageClass: local-path
-    existingClaim: ""
+    mountPath: /media   
+
 
 resources:
   limits:
