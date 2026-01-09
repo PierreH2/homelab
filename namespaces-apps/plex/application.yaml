@@ -6,18 +6,10 @@ metadata:
 spec:
   project: default
 
-  sources:
-    - repoURL: https://k8s-home-lab.github.io/helm-charts/
-      chart: plex
-      targetRevision: "*"
-      helm:
-        valueFiles:
-          - $values/namespaces-apps/plex/values.yaml
-
-    - repoURL: https://github.com/PierreH2/homelab.git
-      targetRevision: main
-      ref: values
-      path: namespaces-apps/plex 
+  source:
+    repoURL: https://github.com/PierreH2/homelab.git
+    targetRevision: main
+    path: namespaces-apps/plex/plex
 
   destination:
     server: https://kubernetes.default.svc
