@@ -36,7 +36,7 @@ persistence:
     enabled: true
     type: pvc
     accessMode: ReadWriteOnce
-    size: 2Ti
+    size: 50Gi
     storageClass: local-path
     mountPath: /media   
 
