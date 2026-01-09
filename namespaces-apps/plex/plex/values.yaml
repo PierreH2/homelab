@@ -16,9 +16,6 @@ paths:
   media: /data/nas/public/plex/media
 
 resources:
-  requests:
-    cpu: "500m"
-    memory: "1Gi"
   limits:
     cpu: "2"
     memory: "4Gi"
