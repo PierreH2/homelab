@@ -4,7 +4,7 @@ image:
 
 env:
   TZ: Europe/Paris
-  PLEX_CLAIM: "claim-sh4ePKGZEEBGz4B7eH2J"
+  PLEX_CLAIM: claim-sh4ePKGZEEBGz4B7eH2J
 
 
 service:
