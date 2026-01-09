@@ -25,5 +25,6 @@ spec:
     name: letsencrypt-ovh-prod
     kind: ClusterIssuer
   dnsNames:
-  - piron-tech.com
-  - "*.piron-tech.com"
+    - piron-tech.com
+    - "*.piron-tech.com"
+
