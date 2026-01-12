@@ -24,7 +24,7 @@ server:
 
 # --- Exposition via Gateway API (HTTPRoute) ---
 ingress:
-  enabled: false
+  enabled: true
   route:
     main:
       enabled: true

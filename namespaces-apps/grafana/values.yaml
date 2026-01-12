@@ -21,7 +21,7 @@ grafana.ini:
 
 # --- Gateway API ---
 ingress:
-  enabled: false
+  enabled: true
   route:
     main:
       enabled: true
