@@ -1,0 +1,27 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: grafana-hostpath-pv
+spec:
+  capacity:
+    storage: 10Gi
+  accessModes:
+    - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: grafana-hostpath
+  hostPath:
+    path: /data/nas/private/grafana
+    type: DirectoryOrCreate
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: grafana-pvc
+  namespace: grafana
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: grafana-hostpath
+  resources:
+    requests:
+      storage: 10Gi

@@ -11,9 +11,43 @@ spec:
     namespace: grafana
 
   sources:
+    # Helm chart Grafana
     - repoURL: https://grafana.github.io/helm-charts
       chart: grafana
-      targetRevision: "10.3.0" 
+      targetRevision: "10.*"
+      helm:
+        releaseName: grafana
+        valueFiles:
+          - $values/namespaces-apps/grafana/values.yaml
+
+    # Ton repo Git (values + storage)
+    - repoURL: https://github.com/PierreH2/homelab.git
+      targetRevision: main
+      ref: values
+      path: namespaces-apps/grafana
+
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: grafana
+  namespace: argocd
+spec:
+  project: default
+
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: grafana
+
+  sources:
+    - repoURL: https://grafana.github.io/helm-charts
+      chart: grafana
+      targetRevision: "10.*"
       helm:
         releaseName: grafana
         valueFiles:
@@ -22,6 +56,7 @@ spec:
     - repoURL: https://github.com/PierreH2/homelab.git
       targetRevision: main
       ref: values
+      path: namespaces-apps/grafana
 
   syncPolicy:
     automated:

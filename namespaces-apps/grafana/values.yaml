@@ -4,34 +4,22 @@ service:
   port: 80
   targetPort: 3000
 
-# --- Persistance (hostPath) ---
+# --- Persistance ---
 persistence:
-  enabled: false
+  enabled: true
+  type: pvc
+  existingClaim: grafana-pvc
 
-# IMPORTANT: désactive l'init container root du chart
+# Cluster non-root → on désactive toute tentative de chown
 initChownData:
   enabled: false
-
-extraVolumes:
-  - name: grafana-storage
-    hostPath:
-      path: /data/nas/private/grafana
-      type: DirectoryOrCreate
-
-extraVolumeMounts:
-  - name: grafana-storage
-    mountPath: /grafana-data
-
-env:
-  GF_PATHS_DATA: /grafana-data
-  GF_PATHS_PLUGINS: /grafana-data/plugins
 
 grafana.ini:
   server:
     root_url: "%(protocol)s://grafana.piron-tech.com/"
     serve_from_sub_path: false
 
-# --- Exposition via Gateway API (HTTPRoute) ---
+# --- Gateway API ---
 ingress:
   enabled: false
   route:
@@ -42,6 +30,7 @@ ingress:
       parentRefs:
         - name: eg
           namespace: envoy-gateway-system
+          sectionName: https   
       hostnames:
         - grafana.piron-tech.com
       rules:
@@ -52,3 +41,5 @@ ingress:
           backendRefs:
             - name: grafana
               port: 80
+              kind: Service
+              group: ""

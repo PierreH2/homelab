@@ -33,6 +33,7 @@ ingress:
       parentRefs:
         - name: eg
           namespace: envoy-gateway-system
+          sectionName: https
       hostnames:
         - prometheus.piron-tech.com
       rules:
