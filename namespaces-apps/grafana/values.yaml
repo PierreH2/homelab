@@ -4,25 +4,51 @@ service:
   port: 80
   targetPort: 3000
 
-route:
-  main:
-    enabled: true
-    apiVersion: gateway.networking.k8s.io/v1
-    kind: HTTPRoute
-    parentRefs:
-      - name: eg
-        namespace: envoy-gateway-system
-    hostnames:
-      - grafana.piron-tech.com
-    matches:
-      - path:
-          type: PathPrefix
-          value: /
-    additionalRules:
-      - matches:
-          - path:
-              type: PathPrefix
-              value: /
-        backendRefs:
-          - name: grafana
-            port: 80
+# --- Persistance (hostPath) ---
+persistence:
+  enabled: false
+
+# IMPORTANT: désactive l'init container root du chart
+initChownData:
+  enabled: false
+
+extraVolumes:
+  - name: grafana-storage
+    hostPath:
+      path: /data/nas/private/grafana
+      type: DirectoryOrCreate
+
+extraVolumeMounts:
+  - name: grafana-storage
+    mountPath: /grafana-data
+
+env:
+  GF_PATHS_DATA: /grafana-data
+  GF_PATHS_PLUGINS: /grafana-data/plugins
+
+grafana.ini:
+  server:
+    root_url: "%(protocol)s://grafana.piron-tech.com/"
+    serve_from_sub_path: false
+
+# --- Exposition via Gateway API (HTTPRoute) ---
+ingress:
+  enabled: false
+  route:
+    main:
+      enabled: true
+      apiVersion: gateway.networking.k8s.io/v1
+      kind: HTTPRoute
+      parentRefs:
+        - name: eg
+          namespace: envoy-gateway-system
+      hostnames:
+        - grafana.piron-tech.com
+      rules:
+        - matches:
+            - path:
+                type: PathPrefix
+                value: /
+          backendRefs:
+            - name: grafana
+              port: 80

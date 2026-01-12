@@ -1,9 +1,35 @@
-extraManifests:
-  - apiVersion: gateway.networking.k8s.io/v1
-    kind: HTTPRoute
-    metadata:
-      name: prometheus
-    spec:
+server:
+  # --- Service ---
+  service:
+    enabled: true
+    servicePort: 80
+    targetPort: 9090
+
+  # --- Persistance (hostPath) ---
+  persistentVolume:
+    enabled: false
+
+  # Prometheus écrira ici
+  storagePath: /prometheus-data
+
+  # hostPath -> /prometheus-data
+  extraHostPathMounts:
+    - name: prometheus-storage
+      mountPath: /prometheus-data
+      hostPath: /data/nas/private/prometheus
+      readOnly: false
+
+  # IMPORTANT: pas d'init container root (non-root policy)
+  extraInitContainers: []
+
+# --- Exposition via Gateway API (HTTPRoute) ---
+ingress:
+  enabled: false
+  route:
+    main:
+      enabled: true
+      apiVersion: gateway.networking.k8s.io/v1
+      kind: HTTPRoute
       parentRefs:
         - name: eg
           namespace: envoy-gateway-system
