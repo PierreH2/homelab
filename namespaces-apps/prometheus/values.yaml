@@ -22,25 +22,3 @@ server:
   # IMPORTANT: pas d'init container root (non-root policy)
   extraInitContainers: []
 
-# --- Exposition via Gateway API (HTTPRoute) ---
-ingress:
-  enabled: true
-  route:
-    main:
-      enabled: true
-      apiVersion: gateway.networking.k8s.io/v1
-      kind: HTTPRoute
-      parentRefs:
-        - name: eg
-          namespace: envoy-gateway-system
-          sectionName: https
-      hostnames:
-        - prometheus.piron-tech.com
-      rules:
-        - matches:
-            - path:
-                type: PathPrefix
-                value: /
-          backendRefs:
-            - name: prometheus-server
-              port: 80
