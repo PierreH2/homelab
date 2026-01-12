@@ -27,3 +27,19 @@ server:
       readOnly: false
 
   extraInitContainers: []
+
+serverFiles:
+  prometheus.yml:
+    scrape_configs:
+      # kube-state-metrics
+      - job_name: kube-state-metrics
+        static_configs:
+          - targets:
+              - kube-state-metrics.prometheus.svc.cluster.local:8080
+
+      # node-exporter
+      - job_name: node-exporter
+        static_configs:
+          - targets:
+              - node-exporter.prometheus.svc.cluster.local:9100
+
