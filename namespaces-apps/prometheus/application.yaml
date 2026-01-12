@@ -30,6 +30,8 @@ spec:
       targetRevision: "4.*"
       helm:
         releaseName: node-exporter
+        valueFiles:
+          - $values/namespaces-apps/prometheus/node-exporter-values.yaml
 
     - repoURL: https://github.com/PierreH2/homelab.git
       targetRevision: main
