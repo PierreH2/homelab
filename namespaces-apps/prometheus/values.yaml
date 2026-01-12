@@ -1,6 +1,6 @@
 server:
   retention: "4d"
-  retentionSize: "10Gi"
+  retentionSize: "10GB"
 
   service:
     enabled: true
