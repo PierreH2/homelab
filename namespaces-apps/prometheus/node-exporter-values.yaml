@@ -1,6 +1,0 @@
-hostPort:
-  enabled: false
-
-service:
-  enabled: true
-  port: 9100

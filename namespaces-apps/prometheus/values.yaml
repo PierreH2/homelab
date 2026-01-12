@@ -31,15 +31,13 @@ server:
 serverFiles:
   prometheus.yml:
     scrape_configs:
-      # kube-state-metrics
+
       - job_name: kube-state-metrics
         static_configs:
           - targets:
               - kube-state-metrics.prometheus.svc.cluster.local:8080
 
-      # node-exporter
-      - job_name: node-exporter
+      - job_name: node-exporter-vm
         static_configs:
           - targets:
-              - node-exporter.prometheus.svc.cluster.local:9100
-
+              - 192.168.1.100:9100
