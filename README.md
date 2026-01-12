@@ -1,96 +1,101 @@
 # Homelab
 
-Collection de manifests, charts et scripts pour déployer et gérer mon homelab Kubernetes (k3s / clusters locaux).
+This repository is a collection of manifests, charts, and scripts used to deploy
+and manage my Kubernetes homelab (K3S running on Arch Linux).
 
-## But
-Organiser les applications (Argo Rollouts, cert-manager, Grafana, Prometheus, Traefik, MetalLB, etc.), l'infrastructure Terraform et les scripts d'automatisation pour déploiement reproductible.
+## Architecture
+The homelab is based on a single-node Kubernetes cluster (K3S) running on Arch Linux.
+Applications are deployed using GitOps via ArgoCD and exposed to the Internet through
+a Kubernetes API Gateway (Envoy), secured with TLS and OAuth2 authentication.
 
-## TO DO / Historique
+Persistent data is stored on a NAS mounted as a Samba subvolume on the host machine.
 
-- [x] Installer Arch linux
-- [x] Installer K3S
-- [x] Monter un subvolume NAS (Samba)
-- [x] Déployer ArgoCD & ArgoCD rollouts
-- [x] Déployer mes applications via plusieurs solutions: GitOps, Terraform et Kustomize
-- [x] Déployer une gateway API kubernetes Traefik + cert manager => Limite Traefik
-- [x] (correctif) Déployer une gateway API kubernetes Envoy
-- [x] Exposer mes application via route http
-- [x] Déployer un serveur DNS
-- [ ] Sécuriser l'exposition sur internet
-- [x] Monitoring Prometheus + Grafana
-- [ ] Déployer des runners GitHub Actions sur mon cluster kubernetes
-- [ ] Migrer sur istio pour faire du service Mesh
+---
 
-## Gateway Traefik issue 
-La gateway kubernetes Traefik ne gère pas le crd backendtlspolicies et ne permet donc pas la connection en tls de la gateway aux pods. Traefik gère uniquement la connection en tls avec le front.
+## TO DO
 
-## DNS
-La bbox ne permet pas de mofidier le DNS principal pour des raisons de sécurité. Ainsi, le serveur DNS (bind) doit etre ajouté en DNS primaire sur chacune des machines.
-L'alternative serait de modifier localement sur chaque machine le fichier /etc/hosts si linux ou C:\Windows\System32\drivers\etc\hosts si windows.
+- [x] Install Arch Linux
+- [x] Install K3S
+- [x] Mount a NAS subvolume (Samba)
+- [x] Deploy ArgoCD using Terraform
+- [x] Deploy applications using GitOps
+- [x] Deploy a Kubernetes API Gateway (Traefik → Envoy)
+- [x] Generate a Let's Encrypt certificate using cert-manager for the API Gateway
+- [x] Deploy a DNS server
+- [x] Secure application exposure to the Internet (rate limits & Google OAuth2)
+- [x] Monitor the cluster using Prometheus & Grafana
+- [ ] Deploy GitHub Actions runners on the Kubernetes cluster
+- [ ] Migrate to Istio to implement a service mesh
 
-## Arborescence principale
-- namespaces-apps/ — kustomize / apps par namespace (charts embarqués pour reproducibilité)
-- scripts/ — utilitaires (deploy, terraform, certificates, port-forward)
-- terraform/ — infra déclarative (argocd, clusters, ressources cloud éventuelles)
-- .env — variables d'environnement locales
+---
 
-## Prérequis
-- bash, kubectl, kustomize, helm, terraform installés
-- accès au cluster (KUBECONFIG)
-- variables locales dans `.env` (ne pas committer de secrets)
+## Repository Structure
 
-## Déploiement rapide
-1. Charger variables :
-```bash
-source .env
-```
-2. Déployer terraform (si utilisé) :
-```bash
-cd terraform && ./terraform_deploy.sh
-```
-3. Appliquer manifests / kustomize :
-```bash
-./scripts/kubectl_deploy.sh
-```
-4. Initialiser ArgoCD (si nécessaire) :
-```bash
-./scripts/argocd_initial_admin_secret.sh
-./scripts/portforward_argocd.sh
-```
+- `namespaces-apps/` — Application manifests (YAML)
+- `scripts/` — Utility scripts (deploy, terraform, certificates, port-forwarding)
+- `terraform/` — Declarative infrastructure for deploying ArgoCD
 
-## Gestion des certificats
-- scripts/certificate contient generation et import pour k3s.
-- cert-manager manifests dans namespaces-apps/cert-manager.
+---
 
-## Ajouter / modifier une application
-- Créer un répertoire sous `namespaces-apps/<app>` avec `kustomization.yaml` et ressources.
-- Si c'est un chart, placer une copie dans `charts/` pour versionning local.
-- Commit + push ; ArgoCD (si présent) s'occupe de la synchronisation.
+## Prerequisites
 
-## Scripts utiles
-- scripts/kubectl_deploy.sh — applique tous les kustomize
-- scripts/terraform_deploy.sh — wrapper terraform
-- scripts/argocd_initial_admin_secret.sh — init ArgoCD secret
-- scripts/portforward_argocd.sh — port-forward local
+- A Linux machine with the following tools installed:
+  - Kubernetes
+  - Helm
+  - Terraform
+  - kubectl
 
-## Sécurité / bonnes pratiques
-- Ne pas committer secrets : utiliser SealedSecrets / SOPS ou ArgoCD Vault Plugin.
-- Verrouiller les valeurs sensibles dans `.env` ou gestionnaire de secrets.
+---
 
-## Contribuer
-- Ouvrir une PR décrivant la modification, tests locaux obligatoires (kubectl apply --dry-run si possible).
-- Respecter les kustomize/Helm existants et versions embarquées.
+## Quick Deployment Guide
 
-## Licence
-Voir fichier LICENSE à la racine.
+### 0. Load variables
+Deploy and configure a Linux OS, then deploy a Kubernetes cluster (K3S was used).
 
-# Applications
+### 1. Deploy ArgoCD
+ArgoCD is deployed using Terraform.
+All deployments in steps 3 and 4 are managed through ArgoCD Applications.
 
-Les applications déployées :
-- ArgoCD : via Terraform + helm (terraform apply)
-- k8s-dashboard : via ArgoCD 
-- Argo-rollouts : via helm + kustomize (kubectl kustomize . --enable-helm | kubectl apply -f -)
-- Traeffik : via helm + kustomize (kubectl kustomize . --enable-helm | kubectl apply -f -)*
-- Prometheus : via ArgoCD
+### 3. Deploy the Gateway, Load Balancer, and cert-manager (via ArgoCD)
+Deployment includes:
+- A Kubernetes Gateway (Envoy)
+- DNS record purchase (OVH)
+- Opening router firewall rules
+- TLS certificate management for the Gateway using cert-manager and Let's Encrypt
 
+### 4. Deploy applications (via ArgoCD)
+GitOps-based deployment of all homelab applications
+(Prometheus, Grafana, Apache, Plex, etc.).
 
+---
+
+## Applications
+
+- **ArgoCD**: Manages GitOps workflows
+- **Argo Rollouts**: Enables blue/green deployment strategies
+- **Envoy Gateway**: Kubernetes API Gateway managing HTTPRoutes
+- **MetalLB**: Bare-metal load balancer
+- **cert-manager**: Generates and renews TLS certificates for the cluster
+- **Kubernetes Dashboard**: Basic cluster state dashboard
+- **Prometheus**: Time-series database for Kubernetes and node metrics,
+  secured with Google OAuth2 for Internet exposure
+- **Grafana**: Advanced dashboards for cluster state and historical metrics
+- **Apache**: HTTP server
+- **Plex**: Media server for video and image storage
+
+---
+
+## Findings & Lessons Learned
+
+### Traefik Gateway
+The Traefik Kubernetes Gateway does not support the `BackendTLSPolicies` CRD,
+which prevents TLS connections from the Gateway to backend pods.
+Traefik only supports TLS termination at the frontend.
+
+### DNS
+The Bouygues BBox router does not allow modification of the primary DNS server
+for security reasons.
+As a result, the DNS server (Bind) must be manually configured as the primary DNS
+on each machine by editing:
+- `/etc/hosts` on Linux
+- `C:\Windows\System32\drivers\etc\hosts` on Windows
