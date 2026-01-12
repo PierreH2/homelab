@@ -2,48 +2,33 @@ server:
   persistentVolume:
     enabled: false
 
+  # Prometheus écrira ici
   storagePath: /prometheus-data
 
+  # hostPath -> /prometheus-data
   extraHostPathMounts:
     - name: prometheus-storage
       mountPath: /prometheus-data
       hostPath: /data/nas/private/prometheus
       readOnly: false
 
-  # Assure que le dossier hostPath est writable par Prometheus (UID/GID 65534)
-  # Si ton cluster empêche les initContainers en root, tu devras faire le chown côté VM.
-  extraInitContainers:
-    - name: init-chown-prometheus-data
-      image: busybox:1.36.1
-      command: ["sh", "-c", "chown -R 65534:65534 /prometheus-data || true"]
-      securityContext:
-        runAsUser: 0
-      volumeMounts:
-        - name: prometheus-storage
-          mountPath: /prometheus-data
+  # IMPORTANT: pas d'init container root (non-root policy)
+  extraInitContainers: []
 
-  # Exposition via Gateway API (HTTPRoute) vers prometheus.piron-tech.com
-  ingress:
-    enabled: false
-    route:
-      main:
-        enabled: true
-        # parentRefs vers ta Gateway envoy-gateway
-        parentRefs:
-          - name: eg
-            namespace: envoy-gateway-system
-        hostnames:
-          - prometheus.piron-tech.com
-        rules:
-          - matches:
-              - path:
-                  type: PathPrefix
-                  value: /
-            backendRefs:
-              - name: prometheus-server
-                port: 80
-
-  service:
-    enabled: true
-    type: ClusterIP
-    servicePort: 80
+# NOTE: ici c’est bien AU NIVEAU RACINE "ingress.route.main"
+ingress:
+  enabled: false
+  route:
+    main:
+      enabled: true
+      apiVersion: gateway.networking.k8s.io/v1
+      kind: HTTPRoute
+      parentRefs:
+        - name: eg
+          namespace: envoy-gateway-system
+      hostnames:
+        - prometheus.piron-tech.com
+      matches:
+        - path:
+            type: PathPrefix
+            value: /

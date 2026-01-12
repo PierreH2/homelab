@@ -1,6 +1,10 @@
 persistence:
   enabled: false
 
+# IMPORTANT: désactive l'init container root du chart
+initChownData:
+  enabled: false
+
 extraVolumes:
   - name: grafana-storage
     hostPath:
@@ -9,48 +13,31 @@ extraVolumes:
 
 extraVolumeMounts:
   - name: grafana-storage
-    mountPath: /var/lib/grafana
+    mountPath: /grafana-data
 
-# Ensure the hostPath folder permissions are OK for Grafana (UID/GID 472)
-extraInitContainers:
-  - name: init-chown-grafana-data
-    image: busybox:1.36.1
-    command: ["sh", "-c", "chown -R 472:472 /var/lib/grafana || true"]
-    securityContext:
-      runAsUser: 0
-    volumeMounts:
-      - name: grafana-storage
-        mountPath: /var/lib/grafana
+env:
+  GF_PATHS_DATA: /grafana-data
+  GF_PATHS_PLUGINS: /grafana-data/plugins
 
-service:
-  type: ClusterIP
-  port: 80
-
-# Helps Grafana generate correct links when accessed via your domain
 grafana.ini:
   server:
     root_url: "%(protocol)s://grafana.piron-tech.com/"
     serve_from_sub_path: false
 
-# --- Gateway API HTTPRoute to expose Grafana at grafana.piron-tech.com ---
-# This assumes your Gateway terminates HTTP/HTTPS and forwards to the grafana Service on port 80.
-extraObjects:
-  - apiVersion: gateway.networking.k8s.io/v1
-    kind: HTTPRoute
-    metadata:
-      name: grafana
-      namespace: grafana
-    spec:
+# HTTPRoute via Gateway API (chart grafana supporte ingress.route.main)
+ingress:
+  enabled: false
+  route:
+    main:
+      enabled: true
+      apiVersion: gateway.networking.k8s.io/v1
+      kind: HTTPRoute
       parentRefs:
         - name: eg
           namespace: envoy-gateway-system
       hostnames:
         - grafana.piron-tech.com
-      rules:
-        - matches:
-            - path:
-                type: PathPrefix
-                value: /
-          backendRefs:
-            - name: grafana
-              port: 80
+      matches:
+        - path:
+            type: PathPrefix
+            value: /
