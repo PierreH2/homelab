@@ -13,6 +13,6 @@ openssl req -x509 -new -nodes \
   -out ${CA_NAME}.crt \
   -subj "/CN=${CA_NAME}"
 
-echo "✅ CA générée :"
+echo "CA générée :"
 echo " - ${CA_NAME}.crt"
 echo " - ${CA_NAME}.key"
