@@ -1,34 +1,19 @@
-server:
-  persistentVolume:
-    enabled: false
-
-  # Prometheus écrira ici
-  storagePath: /prometheus-data
-
-  # hostPath -> /prometheus-data
-  extraHostPathMounts:
-    - name: prometheus-storage
-      mountPath: /prometheus-data
-      hostPath: /data/nas/private/prometheus
-      readOnly: false
-
-  # IMPORTANT: pas d'init container root (non-root policy)
-  extraInitContainers: []
-
-# NOTE: ici c’est bien AU NIVEAU RACINE "ingress.route.main"
-ingress:
-  enabled: false
-  route:
-    main:
-      enabled: true
-      apiVersion: gateway.networking.k8s.io/v1
-      kind: HTTPRoute
+extraManifests:
+  - apiVersion: gateway.networking.k8s.io/v1
+    kind: HTTPRoute
+    metadata:
+      name: prometheus
+    spec:
       parentRefs:
         - name: eg
           namespace: envoy-gateway-system
       hostnames:
         - prometheus.piron-tech.com
-      matches:
-        - path:
-            type: PathPrefix
-            value: /
+      rules:
+        - matches:
+            - path:
+                type: PathPrefix
+                value: /
+          backendRefs:
+            - name: prometheus-server
+              port: 80
