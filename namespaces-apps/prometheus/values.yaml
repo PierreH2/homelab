@@ -1,13 +1,11 @@
 server:
-
   retention: "4d"
-
   retentionSize: "10Gi"
 
   service:
     enabled: true
     servicePort: 80
-    targetPort: 9090
+    servicePortName: http   
 
   global:
     scrape_interval: 15s
@@ -29,4 +27,3 @@ server:
       readOnly: false
 
   extraInitContainers: []
-
