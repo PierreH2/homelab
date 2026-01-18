@@ -1,13 +1,11 @@
 config:
   provider: google
-
   existingSecret: oauth2-proxy-secrets
 
   cookieExpire: "1h0m0s"
   cookieRefresh: "55m"
 
   scope: "openid email profile"
-
   redirectURL: "https://prometheus.piron-tech.com/oauth2/callback"
 
   configFile: |-
@@ -19,6 +17,8 @@ config:
 authenticatedEmailsFile:
   enabled: true
   persistence: configmap
+  restrictedUserAccessKey: restricted_user_access
+
   restricted_access: |-
     pierre.h001002@gmail.com
 
