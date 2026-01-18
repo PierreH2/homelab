@@ -10,9 +10,9 @@ config:
 
   redirectURL: "https://prometheus.piron-tech.com/oauth2/callback"
 
-  email-domain: [ "*" ]
-  upstream: http://prometheus-server.prometheus.svc.cluster.local:80
-  redirect-url: https://prometheus.piron-tech.com/oauth2/callback
+  configFile: |-
+    email_domains = [ "*" ]
+    upstreams = [ "file:///dev/null" ]
 
 authenticatedEmailsFile:
   enabled: true
