@@ -17,7 +17,10 @@ config:
 authenticatedEmailsFile:
   enabled: true
   persistence: configmap
-  restrictedUserAccessKey: restricted_user_access
+
+  template: oauth2-proxy-accesslist
+
+  restrictedUserAccessKey: restricted_access
 
   restricted_access: |-
     pierre.h001002@gmail.com
