@@ -8,7 +8,7 @@ config:
 
   redirectURL: "https://prometheus.piron-tech.com/oauth2/callback"
 
-  existingSecret: oauth2-proxy-secret
+  existingSecret: oauth2-proxy-secrets
 
 authenticatedEmailsFile:
   enabled: true
