@@ -10,7 +10,7 @@ config:
 
   configFile: |-
     email_domains = [ "*" ]
-    upstreams = [ "http://prometheus-server.prometheus.svc.cluster.local:80" ]
+    upstreams = [ "//blocked" ]
     reverse_proxy = true
     proxy_prefix = "/oauth2"
 
