@@ -1,7 +1,7 @@
 config:
   provider: google
 
-  existingSecret: oauth2-proxy-secrets
+  existingSecret: oauth2-proxy-secret
 
   cookieExpire: "1h0m0s"
   cookieRefresh: "55m"
@@ -14,6 +14,7 @@ config:
     email_domains = [ "*" ]
     upstreams = [ "http://prometheus-server.prometheus.svc.cluster.local:80" ]
     reverse_proxy = true
+    proxy_prefix = "/oauth2"
 
 authenticatedEmailsFile:
   enabled: true
