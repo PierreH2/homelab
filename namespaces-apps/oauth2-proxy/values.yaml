@@ -18,13 +18,8 @@ authenticatedEmailsFile:
   enabled: true
   persistence: configmap
 
-  template: oauth2-proxy-accesslist
-
-  restrictedUserAccessKey: restricted_access
-
   restricted_access: |-
     pierre.h001002@gmail.com
 
-service:
-  portNumber: 80
-  targetPort: 4180
+extraArgs:
+  authenticated-emails-file: /etc/oauth2-proxy/oauth2-proxy-accesslist/restricted_access
