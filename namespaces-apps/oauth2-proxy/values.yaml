@@ -10,16 +10,13 @@ config:
 
   configFile: |-
     email_domains = [ "*" ]
-    upstreams = [ "//blocked" ]
+    upstreams = [ "http://prometheus-server.prometheus.svc.cluster.local:80" ]
     reverse_proxy = true
     proxy_prefix = "/oauth2"
 
 authenticatedEmailsFile:
   enabled: true
   persistence: configmap
-
+  template: "restricted_access"
   restricted_access: |-
     pierre.h001002@gmail.com
-
-extraArgs:
-  authenticated-emails-file: /etc/oauth2-proxy/oauth2-proxy-accesslist/restricted_access
