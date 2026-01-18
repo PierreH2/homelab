@@ -1,8 +1,0 @@
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: oauth2-proxy-allowed-emails
-  namespace: prometheus
-data:
-  emails.txt: |
-    pierre.h001002@gmail.com
