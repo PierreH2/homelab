@@ -12,17 +12,14 @@ config:
 
   configFile: |-
     email_domains = [ "*" ]
-    upstreams = [ "file:///dev/null" ]
+    upstreams = [ "http://prometheus-server.prometheus.svc.cluster.local:80" ]
+    reverse_proxy = true
 
 authenticatedEmailsFile:
   enabled: true
   persistence: configmap
   restricted_access: |-
     pierre.h001002@gmail.com
-
-extraArgs:
-  standard-logging: "true"
-  auth-logging: "true"
 
 service:
   portNumber: 80
