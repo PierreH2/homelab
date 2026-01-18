@@ -1,7 +1,7 @@
 config:
   provider: google
 
-  existingSecret: oauth2-proxy-secrets
+  existingSecret: oauth2-proxy-secret
 
   cookieExpire: "1h0m0s"
   cookieRefresh: "55m"
@@ -10,10 +10,9 @@ config:
 
   redirectURL: "https://prometheus.piron-tech.com/oauth2/callback"
 
-  configFile: |-
-    upstreams = [ "http://prometheus-operated.monitoring.svc.cluster.local:9090" ]
-    email_domains = [ "*" ]
-    reverse_proxy = true
+  email-domain: [ "*" ]
+  upstream: http://prometheus-server.prometheus.svc.cluster.local:80
+  redirect-url: https://prometheus.piron-tech.com/oauth2/callback
 
 authenticatedEmailsFile:
   enabled: true
@@ -24,3 +23,7 @@ authenticatedEmailsFile:
 extraArgs:
   standard-logging: "true"
   auth-logging: "true"
+
+service:
+  portNumber: 80
+  targetPort: 4180
