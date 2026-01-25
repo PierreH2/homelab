@@ -1,0 +1,97 @@
+name: Feature
+description: File a feature request (a suggestion for a significant change).
+title: "[Feature]: "
+labels: ["feature"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to fill out this feature request!
+  - type: input
+    id: impact
+    attributes:
+      label: Impact(s)
+      description: What is the impact of this feature?
+      placeholder: ex. dev/test/prod, number of apps &/or name, short description
+    validations:
+      required: false
+  - type: input
+    id: timeline
+    attributes:
+      label: Timeline Constraints
+      description: What is the timeline for this feature?
+      placeholder: ex. date, deadline, etc.
+    validations:
+      required: false
+  - type: checkboxes
+    id: workaround
+    attributes:
+      label: Workaround
+      description: Is there a workaround for this feature? Describe the workaround in the proposal section
+      options:
+        - label: Yes, there is a workaround
+          required: false
+        - label: No, there is no workaround
+          required: false
+    validations:
+      required: true
+  - type: input
+    id: bb-version
+    attributes:
+      label: Release version concerned
+      description: Give the tag version.
+      placeholder: "v1.0.0"
+  - type: checkboxes
+    id: bb-version-last-version
+    attributes:
+      label: Last Version
+      description: |
+        Is this the last version?\
+        The last version is fully supported.\
+        For older versions, you have to process the fix on your own, and open a pull request for a review.\
+        It is recommended to use at least the latest version of each major release (e.g., the last version of v1.x.x).
+      options:
+        - label: This is the last version
+          required: false
+        - label: I use an older version and use the last version of a major release (ex. last version of v1.x.x)
+          required: false
+        - label: I use a minor version but not the last from my current major version
+          required: false
+    validations:
+      required: true
+  - type: checkboxes
+    id: innersourcer
+    attributes:
+      label: Innersourcer Contribution
+      description: |
+        You are an innersourcer and want to contribute to fix this issue ?\
+        At the bottom of this form, assign the issue to yourself, create a branch and a pull request.\
+        Then, BB team will review the pull request.\
+        This is a way to speed up the development of this feature.\
+        See the Contributing guide for more information on how to contribute and how to join the Innersourcer community.
+      options:
+        - label: Yes, I am an innersourcer and I want to contribute to fix this issue
+          required: false
+  - type: textarea
+    id: use-case
+    attributes:
+      label: Use Cases
+      description: |
+        In order to properly evaluate an feature request, it is necessary to understand the use cases for it. Please describe below the _end goal_ you are trying to achieve that has led you to request this feature. Please keep this section focused on the problem and not on the suggested solution.
+      placeholder:
+      value:
+    validations:
+      required: true
+
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposal
+      description: |
+          If you have an idea for a way to address the problem via a change, please describe it below.
+
+          In this section, it's helpful to include specific examples of how what you are suggesting might look in the application, this allows us to understand the full picture of what you are proposing. If you're not sure of some details, don't worry! When we evaluate the feature request we may suggest modifications as necessary to work within the design constraints.
+      placeholder:
+      value:
+    validations:
+      required: false

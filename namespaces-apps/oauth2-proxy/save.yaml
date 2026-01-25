@@ -1,0 +1,22 @@
+config:
+  existingSecret: oauth2-proxy-secrets
+  cookieExpire: "1h0m0s"
+  cookieRefresh: "55m"
+
+extraArgs:
+  provider: google
+  http-address: 0.0.0.0:4180
+
+  upstream: http://prometheus-server.prometheus.svc.cluster.local:80
+  redirect-url: https://prometheus.piron-tech.com/oauth2/callback
+
+  cookie-secure: "true"
+  cookie-samesite: lax
+  whitelist-domain: ".piron-tech.com"
+
+  email-domain: "*"   
+  authenticated-emails-file: /etc/oauth2/emails.txt
+
+service:
+  portNumber: 80
+  targetPort: 4180
