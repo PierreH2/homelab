@@ -9,7 +9,7 @@ config:
   redirectURL: "https://prometheus.piron-tech.com/oauth2/callback"
 
   configFile: |-
-    email_domains = [ "*" ]
+    email_domains = []
     upstreams = [ "http://prometheus-server.prometheus.svc.cluster.local:80" ]
     reverse_proxy = true
     proxy_prefix = "/oauth2"
@@ -17,6 +17,6 @@ config:
 authenticatedEmailsFile:
   enabled: true
   persistence: configmap
-  template: "restricted_access"
+  template: ""
   restricted_access: |-
     pierre.h001002@gmail.com
