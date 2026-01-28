@@ -55,3 +55,17 @@ metadata:
   namespace: envoy-gateway-system
   annotations:
     metallb.universe.tf/loadBalancerIPs: 192.168.1.240
+spec:
+  type: LoadBalancer
+  selector:
+    gateway.envoyproxy.io/owning-gateway-name: eg
+    gateway.envoyproxy.io/owning-gateway-namespace: envoy-gateway-system
+  ports:
+    - name: http
+      port: 80
+      protocol: TCP
+      targetPort: 8080
+    - name: https
+      port: 443
+      protocol: TCP
+      targetPort: 8443
