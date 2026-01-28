@@ -47,4 +47,11 @@ spec:
       - limit:
           requests: 50
           unit: Second
-
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: envoy-envoy-gateway-system-eg-5391c79d
+  namespace: envoy-gateway-system
+  annotations:
+    metallb.universe.tf/loadBalancerIPs: 192.168.1.240
