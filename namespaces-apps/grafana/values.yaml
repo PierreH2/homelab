@@ -18,19 +18,6 @@ grafana.ini:
   server:
     root_url: "%(protocol)s://grafana.piron-tech.com/"
     serve_from_sub_path: false
-  auth:
-    disable_login_form: false
-    oauth_auto_login: false
-  auth.generic_oauth:
-    enabled: true
-    name: Keycloak
-    allow_sign_up: true
-    client_id: grafana
-    client_secret: GrafanaOidc_2026!
-    scopes: openid profile email
-    auth_url: https://keycloak.piron-tech.com/realms/homelab/protocol/openid-connect/auth
-    token_url: https://keycloak.piron-tech.com/realms/homelab/protocol/openid-connect/token
-    api_url: https://keycloak.piron-tech.com/realms/homelab/protocol/openid-connect/userinfo
 
 # --- Gateway API ---
 ingress:
