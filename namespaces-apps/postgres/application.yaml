@@ -1,0 +1,32 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: postgres
+  namespace: argocd
+spec:
+  project: default
+
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: postgres
+
+  sources:
+    - repoURL: https://charts.bitnami.com/bitnami
+      chart: postgresql
+      targetRevision: 16.*
+      helm:
+        releaseName: postgresql
+        valueFiles:
+          - $values/namespaces-apps/postgres/values.yaml
+
+    - repoURL: https://github.com/PierreH2/homelab.git
+      targetRevision: main
+      ref: values
+      path: namespaces-apps/postgres
+
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true

@@ -1,0 +1,47 @@
+auth:
+  adminUser: admin
+  existingSecret: keycloak-admin-secret
+  passwordSecretKey: admin-password
+
+production: true
+proxyHeaders: xforwarded
+hostnameStrict: true
+httpEnabled: true
+
+extraEnvVars:
+  - name: KC_HOSTNAME
+    value: keycloak.piron-tech.com
+
+postgresql:
+  enabled: false
+
+externalDatabase:
+  host: postgresql.postgres.svc.cluster.local
+  port: 5432
+  database: keycloak
+  existingSecret: keycloak-db-secret
+  existingSecretUserKey: db-username
+  existingSecretPasswordKey: db-password
+
+ingress:
+  enabled: false
+
+keycloakConfigCli:
+  enabled: true
+  configuration:
+    homelab.yaml: |
+      realm: homelab
+      enabled: true
+      clients:
+        - clientId: grafana
+          name: Grafana
+          enabled: true
+          publicClient: false
+          secret: GrafanaOidc_2026!
+          redirectUris:
+            - https://grafana.piron-tech.com/login/generic_oauth
+          webOrigins:
+            - https://grafana.piron-tech.com
+          protocol: openid-connect
+          standardFlowEnabled: true
+          directAccessGrantsEnabled: true
