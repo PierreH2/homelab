@@ -3,6 +3,11 @@ service:
   type: ClusterIP
   port: 80
   targetPort: 3000
+# --- Ressources ---
+resources:
+  limits:
+    cpu: 300m
+    memory: 1Gi
 
 # --- Persistance ---
 persistence:
