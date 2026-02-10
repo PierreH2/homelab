@@ -1,0 +1,30 @@
+externalURL: https://registry.piron-tech.com
+
+expose:
+  type: clusterIP
+  tls:
+    enabled: false # Le SSL est géré par Envoy Gateway au niveau du parentRef "https"
+
+persistence:
+  enabled: true
+  resourcePolicy: "keep"
+  persistentVolumeClaim:
+    registry:
+      existingClaim: ""
+      storageClass: ""
+      subPath: "registry"
+      accessMode: ReadWriteOnce
+      size: 15Gi
+    database:
+      existingClaim: ""
+      storageClass: ""
+      subPath: "database"
+      size: 4Gi
+    jobservice:
+      existingClaim: ""
+      storageClass: ""
+      subPath: "jobservice"
+      size: 1Gi
+
+# Configuration spécifique pour forcer l'utilisation du HostPath
+# Note : Il faudra créer manuellement les PVs (voir ci-dessous)

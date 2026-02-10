@@ -1,0 +1,24 @@
+# storage-harbor.yaml
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: harbor-nas-pv
+spec:
+  capacity:
+    storage: 20Gi
+  accessModes: [ReadWriteOnce]
+  hostPath:
+    path: "/data/nas/public/harbor"
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: harbor-nas-pvc
+  namespace: harbor
+spec:
+  accessModes: [ReadWriteOnce]
+  resources:
+    requests:
+      storage: 20Gi
+  volumeName: harbor-nas-pv
+---
