@@ -28,3 +28,51 @@ persistence:
 
 # Configuration spécifique pour forcer l'utilisation du HostPath
 # Note : Il faudra créer manuellement les PVs (voir ci-dessous)
+
+# ... tes configurations précédentes (externalURL, persistence, etc.) ...
+
+# 1. Configuration des ressources pour les composants principaux
+portal:
+  resources:
+    limits:
+      memory: "128Mi"
+      cpu: "200m"
+
+core:
+  resources:
+    limits:
+      memory: "512Mi"
+      cpu: "500m"
+
+jobservice:
+  resources:
+    limits:
+      memory: "256Mi"
+      cpu: "200m"
+
+registry:
+  resources:
+    limits:
+      memory: "512Mi"
+      cpu: "500m"
+
+# 2. Base de données et Redis (Composants critiques)
+database:
+  resources:
+    limits:
+      memory: "512Mi"
+      cpu: "500m"
+
+redis:
+  resources:
+    limits:
+      memory: "128Mi"
+      cpu: "200m"
+
+# 3. Trivy (Le scanner de vulnérabilités - Le plus gourmand !)
+trivy:
+  enabled: true
+  resources:
+    limits:
+      memory: "1Gi" # Trivy a besoin de RAM pour charger les DB de vulnérabilités
+      cpu: "1000m"
