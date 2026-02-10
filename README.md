@@ -17,15 +17,15 @@ Persistent data is stored on a NAS mounted as a Samba subvolume on the host mach
 - [x] Install Arch Linux
 - [x] Install K3S
 - [x] Mount a NAS subvolume (Samba)
-- [x] Deploy ArgoCD using Terraform
+- [x] Deploy ArgoCD using Helm
 - [x] Deploy applications using GitOps
 - [x] Deploy a Kubernetes API Gateway (Traefik → Envoy)
 - [x] Generate a Let's Encrypt certificate using cert-manager for the API Gateway
 - [x] Deploy a DNS server
 - [x] Secure application exposure to the Internet (rate limits & Google OAuth2)
 - [x] Monitor the cluster using Prometheus & Grafana
-- [ ] Deploy an IDP (keycloak)
-- [ ] Deploy an registry (Harbor)
+- [ ] Deploy an IDP (Keycloak)
+- [ ] Deploy a registry (Harbor)
 - [ ] Deploy GitHub Actions runners on the Kubernetes cluster
 - [ ] Migrate to Istio to implement a service mesh
 
@@ -34,8 +34,7 @@ Persistent data is stored on a NAS mounted as a Samba subvolume on the host mach
 ## Repository Structure
 
 - `namespaces-apps/` — Application manifests (YAML)
-- `scripts/` — Utility scripts (deploy, terraform, certificates, port-forwarding)
-- `terraform/` — Declarative infrastructure for deploying ArgoCD
+- `scripts/` — Utility scripts (deploy, certificates, port-forwarding)
 
 ---
 
@@ -44,7 +43,6 @@ Persistent data is stored on a NAS mounted as a Samba subvolume on the host mach
 - A Linux machine with the following tools installed:
   - Kubernetes
   - Helm
-  - Terraform
   - kubectl
 
 ---
@@ -55,17 +53,17 @@ Persistent data is stored on a NAS mounted as a Samba subvolume on the host mach
 Deploy and configure a Linux OS, then deploy a Kubernetes cluster (K3S was used).
 
 ### 1. Deploy ArgoCD
-ArgoCD is deployed using Terraform.
+ArgoCD is deployed initially via Helm.
 All deployments in steps 3 and 4 are managed through ArgoCD Applications.
 
-### 3. Deploy the Gateway, Load Balancer, and cert-manager (via ArgoCD)
+### 2. Deploy the Gateway, Load Balancer, and cert-manager (via ArgoCD)
 Deployment includes:
 - A Kubernetes Gateway (Envoy)
 - DNS record purchase (OVH)
 - Opening router firewall rules
 - TLS certificate management for the Gateway using cert-manager and Let's Encrypt
 
-### 4. Deploy applications (via ArgoCD)
+### 3. Deploy applications (via ArgoCD)
 GitOps-based deployment of all homelab applications
 (Prometheus, Grafana, Apache, Plex, etc.).
 
@@ -79,6 +77,9 @@ GitOps-based deployment of all homelab applications
 - **MetalLB**: Bare-metal load balancer
 - **cert-manager**: Generates and renews TLS certificates for the cluster
 - **Kubernetes Dashboard**: Basic cluster state dashboard
+- **Keycloak**: Identity provider (IDP) for SSO
+- **Harbor**: Private registry for container images
+- **Kyverno**: Policy engine to enforce Harbor usage and verify image signatures
 - **Prometheus**: Time-series database for Kubernetes and node metrics,
   secured with Google OAuth2 for Internet exposure
 - **Grafana**: Advanced dashboards for cluster state and historical metrics

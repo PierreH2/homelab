@@ -1,0 +1,12 @@
+# Argo CD Helm values
+# Keep service name stable: release name should be "argo-cd"
+configs:
+  params:
+    # Serve HTTP (no TLS) on the Argo CD server
+    server.insecure: true
+
+server:
+  service:
+    type: ClusterIP
+    servicePortHttp: 80
+    servicePortHttps: 443
