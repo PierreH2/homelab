@@ -1,0 +1,27 @@
+# Configuration du nom d'hôte pour Keycloak 26+
+hostname: keycloak.piron-tech.com
+
+# Configuration du Proxy (Indispensable pour Envoy / SSL Termination)
+proxy: edge
+
+# Identifiants initiaux
+auth:
+  adminUser: admin
+  adminPassword: "premiermdpachangerplustard" 
+
+# Configuration de la base de données intégrée (PostgreSQL)
+postgresql:
+  enabled: true
+  persistence:
+    existingClaim: "keycloak-nas-pvc"
+    # Bitnami utilise le sous-dossier 'data' par défaut dans le volume
+    mountPath: /bitnami/postgresql
+
+resources:
+  limits:
+    cpu: 1000m
+    memory: 1Gi
+
+# Désactivation de l'Ingress natif (car on utilise HTTPRoute)
+ingress:
+  enabled: false

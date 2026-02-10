@@ -1,23 +1,24 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: harbor
+  name: keycloak
   namespace: argocd
 spec:
   project: default
 
   destination:
     server: https://kubernetes.default.svc
-    namespace: harbor
+    namespace: keycloak
 
   sources:
-    - repoURL: https://helm.goharbor.io
-      chart: harbor
-      targetRevision: "1.18.*"
+    - repoURL: https://charts.bitnami.com/bitnami
+      chart: keycloak
+      targetRevision: "22.*" 
       helm:
-        releaseName: harbor
+        releaseName: keycloak
         valueFiles:
-          - $values/namespaces-apps/harbor/values.yaml
+          - $values/namespaces-apps/keycloak/values.yaml
+    
     - repoURL: https://github.com/PierreH2/homelab.git
       targetRevision: main
       ref: values

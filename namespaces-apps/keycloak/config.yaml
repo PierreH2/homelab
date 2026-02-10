@@ -1,24 +1,22 @@
-# storage-harbor.yaml
 apiVersion: v1
 kind: PersistentVolume
 metadata:
-  name: harbor-nas-pv
+  name: keycloak-nas-pv
 spec:
   capacity:
-    storage: 25Gi
+    storage: 10Gi
   accessModes: [ReadWriteOnce]
   hostPath:
-    path: "/data/nas/public/registry"
+    path: "/data/nas/private/keycloak"
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: harbor-nas-pvc
-  namespace: harbor
+  name: keycloak-nas-pvc
+  namespace: keycloak
 spec:
   accessModes: [ReadWriteOnce]
   resources:
     requests:
-      storage: 25Gi
-  volumeName: harbor-nas-pv
----
+      storage: 10Gi
+  volumeName: keycloak-nas-pv
