@@ -8,14 +8,24 @@ proxy: edge
 auth:
   adminUser: admin
   adminPassword: "premiermdpachangerplustard" 
+# Dans namespaces-apps/keycloak/values.yaml
 
-# Configuration de la base de données intégrée (PostgreSQL)
+global:
+  imageRegistry: quay.io
+
+image:
+  repository: bitnami/keycloak
+  # targetRevision 22.x installe Keycloak 26.x
+  tag: 26.0.5-debian-12-r0 
+
 postgresql:
-  enabled: true
+  image:
+    registry: quay.io
+    repository: bitnami/postgresql
+    tag: 16.6.0-debian-12-r7
   persistence:
     existingClaim: "keycloak-nas-pvc"
-    # Bitnami utilise le sous-dossier 'data' par défaut dans le volume
-    mountPath: /bitnami/postgresql
+# Configuration de la base de données intégrée (PostgreSQL)
 
 resources:
   limits:
