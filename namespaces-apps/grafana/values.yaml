@@ -1,78 +1,60 @@
-# Tout doit être sous le bloc principal "grafana" pour le chart officiel
-grafana:
+service:
   enabled: true
+  type: ClusterIP
+  port: 80
+  targetPort: 3000
 
-  # --- Service ---
-  service:
+resources:
+  limits:
+    cpu: 300m
+    memory: 1Gi
+
+persistence:
+  enabled: true
+  type: pvc
+  existingClaim: grafana-pvc
+
+initChownData:
+  enabled: false
+
+envValueFrom:
+  GF_AUTH_GENERIC_OAUTH_CLIENT_SECRET:
+    secretKeyRef:
+      name: grafana-authentik-secret
+      key: client-secret
+
+grafana.ini:
+  server:
+    root_url: "https://grafana.piron-tech.com/"
+    serve_from_sub_path: false
+  auth.generic_oauth:
     enabled: true
-    type: ClusterIP
-    port: 80
-    targetPort: 3000
+    name: "Authentik"
+    allow_sign_up: true
+    client_id: "BcF4HHxCwGVUyWvI6u9NpZyiGSBjhMPFhmeFKT5G"
+    scopes: "openid profile email"
+    auth_url: "https://authentik.piron-tech.com/application/o/authorize/"
+    token_url: "https://authentik.piron-tech.com/application/o/token/"
+    api_url: "https://authentik.piron-tech.com/application/o/userinfo/"
+    role_attribute_path: "contains(groups, 'Grafana Admins') && 'Admin' || 'Viewer'"
 
-  # --- Ressources ---
-  resources:
-    limits:
-      cpu: 300m
-      memory: 1Gi
+# If you use Gateway API, usually keep classic ingress disabled
+ingress:
+  enabled: false
 
-  # --- Persistance ---
-  persistence:
+# Gateway API (BETA in this chart)
+route:
+  main:
     enabled: true
-    type: pvc
-    existingClaim: grafana-pvc
-
-  # Cluster non-root → on désactive toute tentative de chown
-  initChownData:
-    enabled: false
-
-  # --- Variables d'environnement (Secret) ---
-  envValueFrom:
-    GF_AUTH_GENERIC_OAUTH_CLIENT_SECRET:
-      secretKeyRef:
-        name: grafana-authentik-secret
-        key: client-secret
-
-  
-  grafana.ini:
-    server:
-      root_url: "https://grafana.piron-tech.com/"
-      serve_from_sub_path: false
-    auth:
-      signout_redirect_url: "https://authentik.piron-tech.com/application/o/grafana/end-session/"
-      oauth_auto_login: false # Mets à true si tu veux supprimer l'écran de login Grafana
-    auth.generic_oauth:
-      enabled: true
-      name: "Authentik"
-      allow_sign_up: true
-      client_id: "BcF4HHxCwGVUyWvI6u9NpZyiGSBjhMPFhmeFKT5G"
-      scopes: "openid profile email"
-      auth_url: "https://authentik.piron-tech.com/application/o/authorize/"
-      token_url: "https://authentik.piron-tech.com/application/o/token/"
-      api_url: "https://authentik.piron-tech.com/application/o/userinfo/"
-      role_attribute_path: "contains(groups, 'Grafana Admins') && 'Admin' || 'Viewer'"
-
-  # --- Gateway API (Ingress) ---
-  ingress:
-    enabled: true
-    # Note: Dans le chart Grafana, la configuration Gateway API 
-    # se met souvent via des extraObjects ou via l'ingress classique.
-    # Voici la version standard pour le support HTTPRoute :
-    route:
-      main:
-        enabled: true
-        apiVersion: gateway.networking.k8s.io/v1
-        kind: HTTPRoute
-        parentRefs:
-          - name: eg
-            namespace: envoy-gateway-system
-            sectionName: https   
-        hostnames:
-          - grafana.piron-tech.com
-        rules:
-          - matches:
-              - path:
-                  type: PathPrefix
-                  value: /
-            backendRefs:
-              - name: grafana
-                port: 80
+    apiVersion: gateway.networking.k8s.io/v1
+    kind: HTTPRoute
+    parentRefs:
+      - name: eg
+        namespace: envoy-gateway-system
+        sectionName: https
+    hostnames:
+      - grafana.piron-tech.com
+    matches:
+      - path:
+          type: PathPrefix
+          value: /
