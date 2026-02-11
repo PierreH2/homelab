@@ -1,38 +1,72 @@
-# Authentik Helm Chart Values
-# Domain configuration
-domain: authentik.piron-tech.com
+# -- Globally shared configuration
+global:
+  env:
+    # Map the Authentik Secret Key from your 'authentik-secrets' secret
+    - name: AUTHENTIK_SECRET_KEY
+      valueFrom:
+        secretKeyRef:
+          name: authentik-secrets
+          key: secret-key
 
-# Disable bootstrap token
-disableBootstrapUser: true
+## Authentik core configuration
+authentik:
+  # The external URL for your instance
+  external_host: https://authentik.piron-tech.com
+  
+  error_reporting:
+    enabled: false
 
-# PostgreSQL configuration
-postgresql:
-  enabled: true
-  auth:
-    existingSecret: "authentik-postgresql"
-    secretKeys:
-      adminPasswordKey: "password"
-      userPasswordKey: "password"
+  # PostgreSQL connection using your 'authentik-postgresql' secret
+  postgresql:
+    host: "authentik-postgresql" # Matches your secret name/service
+    name: "authentik"
+    user: "authentik"
+    port: 5432
+    password: "" # Leave empty as we use env var below
+  
+  # Inject DB and Redis passwords via env to use your custom Secret keys
+  env:
+    - name: AUTHENTIK_POSTGRESQL__PASSWORD
+      valueFrom:
+        secretKeyRef:
+          name: authentik-postgresql
+          key: password
+    - name: AUTHENTIK_REDIS__PASSWORD
+      valueFrom:
+        secretKeyRef:
+          name: authentik-redis
+          key: password
 
-# Redis configuration
-redis:
-  enabled: true
-  auth:
-    existingSecret: "authentik-redis"
-    existingSecretPasswordKey: "password"
-
-# Server configuration
+# -- Authentik Server component
 server:
+  enabled: true
   replicas: 2
+  
+  # Disable standard Ingress
+  ingress:
+    enabled: false
 
-# Worker configuration  
+  # Gateway API Configuration (HTTPRoute)
+  route:
+    main:
+      enabled: true
+      hostnames:
+        - "authentik.piron-tech.com"
+      parentRefs:
+        - name: my-gateway # Verify this matches your Gateway's name
+          namespace: gateway-system
+
+# -- Authentik Worker component
 worker:
+  enabled: true
   replicas: 1
 
-# Service configuration
-service:
-  type: ClusterIP
-  port: 80
+# -- Dependency: PostgreSQL (Disabled if you manage the DB/Secret manually)
+# If you want Helm to install the DB, set this to true, 
+# but your existing Secret 'authentik-postgresql' is already configured.
+postgresql:
+  enabled: false 
 
-# Image pull policy
-pullPolicy: IfNotPresent
+# -- Dependency: Redis (Disabled if you manage the Secret manually)
+redis:
+  enabled: false
