@@ -1,41 +1,39 @@
-service:
-  enabled: true
-  type: ClusterIP
-  port: 80
-  targetPort: 3000
-# --- Ressources ---
-resources:
-  limits:
-    cpu: 300m
-    memory: 1Gi
-
-# --- Persistance ---
-persistence:
-  enabled: true
-  type: pvc
-  existingClaim: grafana-pvc
-
-# Cluster non-root → on désactive toute tentative de chown
-initChownData:
-  enabled: false
-
-extraEnvVars:
-  - name: GF_AUTH_GENERIC_OAUTH_CLIENT_SECRET
-    valueFrom:
-      secretKeyRef:
-        name: grafana-authentik-secret
-        key: GF_AUTH_GENERIC_OAUTH_CLIENT_SECRET
-
-# Configuration Grafana
+# Tout doit être sous le bloc principal "grafana" pour le chart officiel
 grafana:
-  # 1. Injection du secret depuis le Secret K8s "grafana-authentik-secret"
+  enabled: true
+
+  # --- Service ---
+  service:
+    enabled: true
+    type: ClusterIP
+    port: 80
+    targetPort: 3000
+
+  # --- Ressources ---
+  resources:
+    limits:
+      cpu: 300m
+      memory: 1Gi
+
+  # --- Persistance ---
+  persistence:
+    enabled: true
+    type: pvc
+    existingClaim: grafana-pvc
+
+  # Cluster non-root → on désactive toute tentative de chown
+  initChownData:
+    enabled: false
+
+  # --- Variables d'environnement (Secret) ---
+  # Utilise un seul des deux, "envValueFrom" est le plus propre ici
   envValueFrom:
     GF_AUTH_GENERIC_OAUTH_CLIENT_SECRET:
       secretKeyRef:
         name: grafana-authentik-secret
-        key: client-secret
+        key: client-secret # <--- Assure-toi que c'est la clé dans ton manifest Secret
 
-  # 2. Mise à jour du grafana.ini
+  # --- Configuration Grafana.ini ---
   grafana.ini:
     server:
       root_url: "https://grafana.piron-tech.com/"
@@ -45,34 +43,34 @@ grafana:
       name: "Authentik"
       allow_sign_up: true
       client_id: "BcF4HHxCwGVUyWvI6u9NpZyiGSBjhMPFhmeFKT5G"
-      # client_secret est géré par envValueFrom ci-dessus
       scopes: "openid profile email"
       auth_url: "https://authentik.piron-tech.com/application/o/authorize/"
       token_url: "https://authentik.piron-tech.com/application/o/token/"
       api_url: "https://authentik.piron-tech.com/application/o/userinfo/"
       role_attribute_path: "contains(groups, 'Grafana Admins') && 'Admin' || 'Viewer'"
-      
-# --- Gateway API ---
-ingress:
-  enabled: true
-  route:
-    main:
-      enabled: true
-      apiVersion: gateway.networking.k8s.io/v1
-      kind: HTTPRoute
-      parentRefs:
-        - name: eg
-          namespace: envoy-gateway-system
-          sectionName: https   
-      hostnames:
-        - grafana.piron-tech.com
-      rules:
-        - matches:
-            - path:
-                type: PathPrefix
-                value: /
-          backendRefs:
-            - name: grafana
-              port: 80
-              kind: Service
-              group: ""
+
+  # --- Gateway API (Ingress) ---
+  ingress:
+    enabled: true
+    # Note: Dans le chart Grafana, la configuration Gateway API 
+    # se met souvent via des extraObjects ou via l'ingress classique.
+    # Voici la version standard pour le support HTTPRoute :
+    route:
+      main:
+        enabled: true
+        apiVersion: gateway.networking.k8s.io/v1
+        kind: HTTPRoute
+        parentRefs:
+          - name: eg
+            namespace: envoy-gateway-system
+            sectionName: https   
+        hostnames:
+          - grafana.piron-tech.com
+        rules:
+          - matches:
+              - path:
+                  type: PathPrefix
+                  value: /
+            backendRefs:
+              - name: grafana
+                port: 80
