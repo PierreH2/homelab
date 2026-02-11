@@ -16,11 +16,25 @@ spec:
       targetRevision: "2025.12.*"
       helm:
         releaseName: authentik
-        valueFiles:
-          - $values/namespaces-apps/authentik/values.yaml
-    - repoURL: https://github.com/PierreH2/homelab.git
-      targetRevision: main
-      ref: values
+        parameters:
+          - name: domain
+            value: "authentik.piron-tech.com"
+          - name: disableBootstrapUser
+            value: "true"
+          - name: postgresql.enabled
+            value: "true"
+          - name: postgresql.auth.existingSecret
+            value: "authentik-postgresql"
+          - name: redis.enabled
+            value: "true"
+          - name: redis.auth.existingSecret
+            value: "authentik-redis"
+          - name: server.replicas
+            value: "2"
+          - name: worker.replicas
+            value: "1"
+          - name: service.type
+            value: "ClusterIP"
 
   syncPolicy:
     automated:
@@ -28,3 +42,4 @@ spec:
       selfHeal: true
     syncOptions:
       - CreateNamespace=true
+

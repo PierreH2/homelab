@@ -1,80 +1,38 @@
-##
-## Authentik Global Configuration
-##
-global:
-  # Domain configuration
-  domain: authentik.piron-tech.com
-  log_level: info
-  
-  # Disable bootstrap token (to avoid security issues)
-  disableBootstrapUser: true
+# Authentik Helm Chart Values
+# Domain configuration
+domain: authentik.piron-tech.com
 
-authentik:
-  # PostgreSQL configuration
-  postgresql:
-    enabled: true
-    auth:
-      existingSecret: "authentik-postgresql"
-      secretKeys:
-        adminPasswordKey: "password"
-        userPasswordKey: "password"
-        databaseKey: "database"
-    primary:
-      persistence:
-        enabled: true
-        size: 8Gi
-    resources:
-      limits:
-        memory: "512Mi"
-        cpu: "500m"
+# Disable bootstrap token
+disableBootstrapUser: true
 
-  # Redis configuration for caching and sessions
-  redis:
-    enabled: true
-    auth:
-      existingSecret: "authentik-redis"
-      existingSecretPasswordKey: "password"
-    master:
-      persistence:
-        enabled: true
-        size: 2Gi
-    resources:
-      limits:
-        memory: "256Mi"
-        cpu: "200m"
+# PostgreSQL configuration
+postgresql:
+  enabled: true
+  auth:
+    existingSecret: "authentik-postgresql"
+    secretKeys:
+      adminPasswordKey: "password"
+      userPasswordKey: "password"
 
-  # Authentik server configuration
-  server:
-    replicas: 2
-    resources:
-      limits:
-        memory: "256Mi"
-        cpu: "500m"
-    ingress:
-      enabled: false  # We use Envoy Gateway instead
+# Redis configuration
+redis:
+  enabled: true
+  auth:
+    existingSecret: "authentik-redis"
+    existingSecretPasswordKey: "password"
 
-  # Authentik worker configuration
-  worker:
-    replicas: 1
-    resources:
-      limits:
-        memory: "256Mi"
-        cpu: "500m"
+# Server configuration
+server:
+  replicas: 2
 
-  # Media storage for uploaded files
-  persistence:
-    media:
-      enabled: true
-      size: 5Gi
-      storageClassName: ""  # Default storage class
+# Worker configuration  
+worker:
+  replicas: 1
 
-# Image configuration
-image:
-  repository: ghcr.io/goauthentik/server
-  tag: 2025.12
-  pullPolicy: IfNotPresent
-
+# Service configuration
 service:
   type: ClusterIP
   port: 80
-  targetPort: 9000
+
+# Image pull policy
+pullPolicy: IfNotPresent
