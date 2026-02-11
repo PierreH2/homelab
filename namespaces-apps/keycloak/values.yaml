@@ -9,14 +9,6 @@ auth:
   adminUser: admin
   adminPassword: "premiermdpachangerplustard" 
 # Dans namespaces-apps/keycloak/values.yaml
-
-global:
-  imageRegistry: quay.io
-
-image:
-  repository: keycloak/keycloak
-  tag: 26.5
-
 ## @section Database parameters
 ##
 
