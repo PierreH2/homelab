@@ -35,6 +35,7 @@ grafana.ini:
     name: "Authentik"
     allow_sign_up: true
     client_id: "BcF4HHxCwGVUyWvI6u9NpZyiGSBjhMPFhmeFKT5G"
+    client_secret: "5vcyni3QgoQHta2ROLaIngKPwUNiDMxBgaC2u2xgK6bgFWQ5wNqo9YoP7pMgiaD8vplFWGpuj9N53z3MNube9Jop9By08jnhGTuItr5jaKqOJ0yR7fgnpgnlcTibLSNa"
     scopes: "openid profile email"
     auth_url: "https://authentik.piron-tech.com/application/o/authorize/"
     token_url: "https://authentik.piron-tech.com/application/o/token/"
