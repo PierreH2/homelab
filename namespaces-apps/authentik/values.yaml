@@ -53,11 +53,19 @@ authentik:
     user: "authentik"
     name: "authentik"
   
-# 4. Disable Built-in DB/Redis (Since you provide your own via secrets/pre-existing pods)
 postgresql:
-  enabled: false
+  enabled: true
+  auth:
+    existingSecret: "authentik-postgresql"
+    secretKeys:
+      userPasswordKey: "password"
+      adminPasswordKey: "password" # Bitnami usually needs both
+
 redis:
-  enabled: false
+  enabled: true
+  auth:
+    existingSecret: "authentik-redis"
+    existingSecretKey: "password"
 
 # 5. Bootstrap config
 disableBootstrapUser: true
