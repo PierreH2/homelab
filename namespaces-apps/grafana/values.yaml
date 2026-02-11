@@ -26,18 +26,20 @@ grafana:
     enabled: false
 
   # --- Variables d'environnement (Secret) ---
-  # Utilise un seul des deux, "envValueFrom" est le plus propre ici
   envValueFrom:
     GF_AUTH_GENERIC_OAUTH_CLIENT_SECRET:
       secretKeyRef:
         name: grafana-authentik-secret
-        key: client-secret # <--- Assure-toi que c'est la clé dans ton manifest Secret
+        key: client-secret
 
-  # --- Configuration Grafana.ini ---
+  
   grafana.ini:
     server:
       root_url: "https://grafana.piron-tech.com/"
       serve_from_sub_path: false
+    auth:
+      signout_redirect_url: "https://authentik.piron-tech.com/application/o/grafana/end-session/"
+      oauth_auto_login: false # Mets à true si tu veux supprimer l'écran de login Grafana
     auth.generic_oauth:
       enabled: true
       name: "Authentik"
