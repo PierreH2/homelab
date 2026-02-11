@@ -1,72 +1,63 @@
-# -- Globally shared configuration
-global:
-  env:
-    # Map the Authentik Secret Key from your 'authentik-secrets' secret
-    - name: AUTHENTIK_SECRET_KEY
-      valueFrom:
-        secretKeyRef:
-          name: authentik-secrets
-          key: secret-key
+# Authentik Helm Chart Values
 
-## Authentik core configuration
-authentik:
-  # The external URL for your instance
-  external_host: https://authentik.piron-tech.com
-  
-  error_reporting:
-    enabled: false
-
-  # PostgreSQL connection using your 'authentik-postgresql' secret
-  postgresql:
-    host: "authentik-postgresql" # Matches your secret name/service
-    name: "authentik"
-    user: "authentik"
-    port: 5432
-    password: "" # Leave empty as we use env var below
-  
-  # Inject DB and Redis passwords via env to use your custom Secret keys
-  env:
-    - name: AUTHENTIK_POSTGRESQL__PASSWORD
-      valueFrom:
-        secretKeyRef:
-          name: authentik-postgresql
-          key: password
-    - name: AUTHENTIK_REDIS__PASSWORD
-      valueFrom:
-        secretKeyRef:
-          name: authentik-redis
-          key: password
-
-# -- Authentik Server component
+# 1. Component-specific Configuration
 server:
-  enabled: true
   replicas: 2
+  # FIX: Service config must be inside the server block
+  service:
+    type: ClusterIP
+    servicePortHttp: 80
   
-  # Disable standard Ingress
-  ingress:
-    enabled: false
-
-  # Gateway API Configuration (HTTPRoute)
+  # Gateway API Configuration
   route:
     main:
       enabled: true
       hostnames:
         - "authentik.piron-tech.com"
       parentRefs:
-        - name: my-gateway # Verify this matches your Gateway's name
+        - name: my-gateway # Verify this name matches your Gateway resource
           namespace: gateway-system
 
-# -- Authentik Worker component
 worker:
-  enabled: true
   replicas: 1
 
-# -- Dependency: PostgreSQL (Disabled if you manage the DB/Secret manually)
-# If you want Helm to install the DB, set this to true, 
-# but your existing Secret 'authentik-postgresql' is already configured.
-postgresql:
-  enabled: false 
+# 2. Global Environment Variables (Mapping your existing secrets)
+global:
+  env:
+    # Map the Authentik Secret Key
+    - name: AUTHENTIK_SECRET_KEY
+      valueFrom:
+        secretKeyRef:
+          name: authentik-secrets
+          key: secret-key
+    # Map Database Password
+    - name: AUTHENTIK_POSTGRESQL__PASSWORD
+      valueFrom:
+        secretKeyRef:
+          name: authentik-postgresql
+          key: password
+    # Map Redis Password
+    - name: AUTHENTIK_REDIS__PASSWORD
+      valueFrom:
+        secretKeyRef:
+          name: authentik-redis
+          key: password
 
-# -- Dependency: Redis (Disabled if you manage the Secret manually)
+# 3. Authentik Core Config
+authentik:
+  external_host: https://authentik.piron-tech.com
+  error_reporting:
+    enabled: false
+  postgresql:
+    host: "authentik-postgresql" # The service name for your DB
+    user: "authentik"
+    name: "authentik"
+  
+# 4. Disable Built-in DB/Redis (Since you provide your own via secrets/pre-existing pods)
+postgresql:
+  enabled: false
 redis:
   enabled: false
+
+# 5. Bootstrap config
+disableBootstrapUser: true
