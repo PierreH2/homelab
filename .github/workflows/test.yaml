@@ -25,6 +25,10 @@ jobs:
           echo "Architecture : $(uname -m)"
           echo "Mémoire disponible :"
           free -h
+      - name: Install kubectl
+        uses: azure/setup-kubectl@v3
+        with:
+          version: 'latest'
       - name: Tester l'accès au cluster
         run: |
           #kubectl utilise le token du ServiceAccount
