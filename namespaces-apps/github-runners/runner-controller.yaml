@@ -1,0 +1,30 @@
+replicaCount: 1
+webhookPort: 9443
+syncPeriod: 1m
+defaultScaleDownDelay: 5m
+enableLeaderElection: true
+
+authSecret:
+  enabled: true
+  create: false
+  name: "controller-manager"
+
+image:
+  repository: "summerwind/actions-runner-controller"
+  actionsRunnerRepositoryAndTag: "summerwind/actions-runner:ubuntu-20.04"
+  dindSidecarRepositoryAndTag: "docker:dind"
+  pullPolicy: IfNotPresent
+
+serviceAccount:
+  create: true
+
+service:
+  type: ClusterIP
+  port: 443
+
+certManagerEnabled: true
+
+logFormat: text
+
+githubWebhookServer:
+  enabled: false

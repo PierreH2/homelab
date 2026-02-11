@@ -1,0 +1,27 @@
+name: Test Homelab Runner
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch: # Permet de lancer le test manuellement depuis l'onglet "Actions"
+
+jobs:
+  check-connection:
+    # On utilise le label que tu as défini dans ton RunnerDeployment
+    runs-on: homelab-self-hosted
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Verifier l'identité du runner
+        run: |
+          echo "Salut Pierre ! Ce job tourne sur ton cluster K8s."
+          echo "Hostname du pod : $(hostname)"
+          echo "Date du jour : $(date)"
+
+      - name: Verifier les ressources du pod
+        run: |
+          echo "Architecture : $(uname -m)"
+          echo "Mémoire disponible :"
+          free -h

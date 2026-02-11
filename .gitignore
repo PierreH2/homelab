@@ -15,4 +15,4 @@ scripts/certificate/*.key
 
 *secret*
 
-homelab.code-workspace
+*.code-workspace

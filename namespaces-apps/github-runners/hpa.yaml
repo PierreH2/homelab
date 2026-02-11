@@ -1,0 +1,15 @@
+apiVersion: actions.summerwind.dev/v1alpha1
+kind: HorizontalRunnerAutoscaler
+metadata:
+  name: k8s-runner-autoscaler
+spec:
+  scaleTargetRef:
+    kind: RunnerDeployment
+    name: k8s-runners
+  scaleDownDelaySecondsAfterScaleOut: 300
+  minReplicas: 1
+  maxReplicas: 3
+  metrics:
+  - type: TotalNumberOfQueuedAndInProgressWorkflowRuns
+    repositoryNames:
+    - PierreH2/homelab

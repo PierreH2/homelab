@@ -102,3 +102,7 @@ As a result, the DNS server (Bind) must be manually configured as the primary DN
 on each machine by editing:
 - `/etc/hosts` on Linux
 - `C:\Windows\System32\drivers\etc\hosts` on Windows
+
+### Bitnami discontinued Keycloak
+The keycloak official helm charts points to bitnami/... but it is now bitnamilegacy/... that contains the images. Fix must be made manually on the values.yaml
+
