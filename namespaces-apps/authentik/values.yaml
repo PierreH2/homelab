@@ -1,0 +1,80 @@
+##
+## Authentik Global Configuration
+##
+global:
+  # Domain configuration
+  domain: authentik.piron-tech.com
+  log_level: info
+  
+  # Disable bootstrap token (to avoid security issues)
+  disableBootstrapUser: true
+
+authentik:
+  # PostgreSQL configuration
+  postgresql:
+    enabled: true
+    auth:
+      existingSecret: "authentik-postgresql"
+      secretKeys:
+        adminPasswordKey: "password"
+        userPasswordKey: "password"
+        databaseKey: "database"
+    primary:
+      persistence:
+        enabled: true
+        size: 8Gi
+    resources:
+      limits:
+        memory: "512Mi"
+        cpu: "500m"
+
+  # Redis configuration for caching and sessions
+  redis:
+    enabled: true
+    auth:
+      existingSecret: "authentik-redis"
+      existingSecretPasswordKey: "password"
+    master:
+      persistence:
+        enabled: true
+        size: 2Gi
+    resources:
+      limits:
+        memory: "256Mi"
+        cpu: "200m"
+
+  # Authentik server configuration
+  server:
+    replicas: 2
+    resources:
+      limits:
+        memory: "256Mi"
+        cpu: "500m"
+    ingress:
+      enabled: false  # We use Envoy Gateway instead
+
+  # Authentik worker configuration
+  worker:
+    replicas: 1
+    resources:
+      limits:
+        memory: "256Mi"
+        cpu: "500m"
+
+  # Media storage for uploaded files
+  persistence:
+    media:
+      enabled: true
+      size: 5Gi
+      storageClassName: ""  # Default storage class
+
+# Image configuration
+image:
+  repository: ghcr.io/goauthentik/server
+  tag: 2025.12
+  pullPolicy: IfNotPresent
+
+service:
+  type: ClusterIP
+  port: 80
+  targetPort: 9000

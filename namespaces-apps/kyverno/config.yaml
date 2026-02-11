@@ -23,6 +23,7 @@ spec:
                 values:
                 - keycloak
                 - postgres
+                - authentik
       mutate:
         foreach:
           - list: "request.object.spec.containers"

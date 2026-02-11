@@ -1,0 +1,31 @@
+# Configuration supplémentaire pour Authentik
+# Ces valeurs peuvent être utilisées comme ConfigMap
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: authentik-config
+  namespace: authentik
+data:
+  # Configuration des logs
+  AUTHENTIK_LOG_LEVEL: info
+  
+  # Configuration pour le mode debug (à désactiver en production)
+  AUTHENTIK_DEBUG: "false"
+  
+  # Email configuration (à configurer selon votre serveur SMTP)
+  AUTHENTIK_EMAIL__HOST: "smtp.example.com"
+  AUTHENTIK_EMAIL__PORT: "587"
+  AUTHENTIK_EMAIL__USERNAME: "your-email@example.com"
+  AUTHENTIK_EMAIL__USE_TLS: "true"
+  AUTHENTIK_EMAIL__USE_SSL: "false"
+  AUTHENTIK_EMAIL__FROM: "noreply@authentik.piron-tech.com"
+  
+  # Configuration pour les sessions
+  AUTHENTIK_SESSION_COOKIE_AGE: "1209600"  # 2 semaines
+  AUTHENTIK_SESSION_COOKIE_SECURE: "true"
+  AUTHENTIK_SESSION_COOKIE_HTTPONLY: "true"
+  
+  # Configuration pour la gestion des erreurs
+  AUTHENTIK_ERROR_REPORTING__ENABLED: "false"
+  AUTHENTIK_ERROR_REPORTING__ENVIRONMENT: "production"
