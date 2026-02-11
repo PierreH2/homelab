@@ -24,9 +24,9 @@ Persistent data is stored on a NAS mounted as a Samba subvolume on the host mach
 - [x] Deploy a DNS server (bind)
 - [x] Secure application exposure to the Internet (rate limits & Google OAuth2)
 - [x] Monitor the cluster using Prometheus & Grafana
-- [ ] Deploy an IDP (Keycloak)
-- [ ] Deploy a registry (Harbor)
-- [ ] Deploy GitHub Actions runners on the Kubernetes cluster
+- [x] Deploy GitHub Actions runners as pods on the Kubernetes cluster
+- [x] Deploy a registry (Harbor) with kyverno to enforce Harbor project usage for images
+- [ ] Deploy an IDP (Keycloak → X)
 - [ ] Migrate to Istio to implement a service mesh
 
 ---
