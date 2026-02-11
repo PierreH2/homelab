@@ -8,3 +8,4 @@ charts/**/*.yml linguist-vendored
 
 *.yaml linguist-language=YAML
 *.yml  linguist-language=YAML
+

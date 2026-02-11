@@ -1,4 +1,5 @@
 # values.yaml
+installCRDs: true
 replicaCount: 1
 
 admissionController:

@@ -14,3 +14,5 @@ scripts/certificate/*.crt
 scripts/certificate/*.key
 
 *secret*
+
+homelab.code-workspace

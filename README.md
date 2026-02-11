@@ -16,12 +16,12 @@ Persistent data is stored on a NAS mounted as a Samba subvolume on the host mach
 
 - [x] Install Arch Linux
 - [x] Install K3S
-- [x] Mount a NAS subvolume (Samba)
+- [x] Deploy a NAS for storage
 - [x] Deploy ArgoCD using Helm
 - [x] Deploy applications using GitOps
 - [x] Deploy a Kubernetes API Gateway (Traefik → Envoy)
 - [x] Generate a Let's Encrypt certificate using cert-manager for the API Gateway
-- [x] Deploy a DNS server
+- [x] Deploy a DNS server (bind)
 - [x] Secure application exposure to the Internet (rate limits & Google OAuth2)
 - [x] Monitor the cluster using Prometheus & Grafana
 - [ ] Deploy an IDP (Keycloak)
