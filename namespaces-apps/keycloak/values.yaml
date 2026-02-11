@@ -14,18 +14,38 @@ global:
   imageRegistry: quay.io
 
 image:
-  repository: bitnami/keycloak
-  # targetRevision 22.x installe Keycloak 26.x
-  tag: 26.0.2-debian-12-r0 
+  repository: keycloak/keycloak
+  tag: 26.5
+
+## @section Database parameters
+##
 
 postgresql:
-  image:
-    registry: quay.io
-    repository: bitnami/postgresql
-    tag: 16.6.0-debian-12-r7
-  persistence:
-    existingClaim: "keycloak-nas-pvc"
-# Configuration de la base de données intégrée (PostgreSQL)
+  ## @param postgresql.enabled Déployer PostgreSQL en tant que base de données pour Keycloak
+  ##
+  enabled: true
+
+  ## @param postgresql.auth.postgresPassword Mot de passe pour l'utilisateur 'postgres'
+  ##
+  auth:
+    postgresPassword: "vmdpachangerplustard"
+    # database: keycloak
+    # username: bn_keycloak
+    # password: ""
+
+  ## Configuration de la persistance pour PostgreSQL
+  ##
+  primary:
+    persistence:
+      ## @param postgresql.primary.persistence.enabled Activer la persistance
+      ##
+      enabled: true
+      ## @param postgresql.primary.persistence.existingClaim Nom du PVC existant à utiliser
+      ## Note : Cela ignorera les paramètres size et storageClass
+      ##
+      existingClaim: "keycloak-nas-pvc"
+      ## Important : si votre PVC a des permissions spécifiques, vous devrez peut-être 
+      ## ajuster le securityContext ici ou dans les paramètres globaux.
 
 resources:
   limits:

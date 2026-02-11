@@ -1,0 +1,32 @@
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
+metadata:
+  name: redirect-to-harbor-proxy
+  annotations:
+    policies.kyverno.io/title: Redirect Image Registry to Harbor Proxy
+    policies.kyverno.io/description: >-
+      Remplace n'importe quelle registry d'image par le proxy Harbor interne 
+      pour optimiser la bande passante et la sécurité.
+spec:
+  background: false 
+  rules:
+    - name: substitute-registry
+      match:
+        any:
+        - resources:
+            kinds:
+              - Pod
+      mutate:
+        foreach:
+          - list: "request.object.spec.containers"
+            patchStrategicMerge:
+              spec:
+                containers:
+                  - name: "{{ element.name }}"
+                    image: "{{ regex_replace_all('^([^/]+\\.[^/]+/|)(.*)$', '{{ element.image }}', 'registry.piron-tech.com/proxy/${2}') }}"
+          - list: "request.object.spec.initContainers"
+            patchStrategicMerge:
+              spec:
+                initContainers:
+                  - name: "{{ element.name }}"
+                    image: "{{ regex_replace_all('^([^/]+\\.[^/]+/|)(.*)$', '{{ element.image }}', 'registry.piron-tech.com/proxy/${2}') }}"

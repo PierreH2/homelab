@@ -1,0 +1,17 @@
+# values.yaml
+replicaCount: 1
+
+admissionController:
+  replicas: 1
+  # On s'assure que Kyverno a les ressources nécessaires
+  resources:
+    limits:
+      cpu: 100m
+      memory: 256Mi
+
+# Optionnel : Si vous voulez que Kyverno génère des rapports détaillés
+reportsController:
+  resources:
+    limits:
+      cpu: 100m
+      memory: 512Mi
