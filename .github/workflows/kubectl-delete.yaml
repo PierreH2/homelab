@@ -1,0 +1,31 @@
+name: kubectl delete -f
+
+on:
+  workflow_dispatch: 
+    inputs:
+      path:
+        description: 'Chemin du manifeste ou dossier à supprimer avec kubectl'
+        required: true
+        default: './'
+
+jobs:
+  check-connection:
+    # On utilise le label que tu as défini dans ton RunnerDeployment
+    runs-on: homelab-self-hosted
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Verifier l'identité du runner
+        run: |
+          echo "Hostname du pod : $(hostname)"
+          echo "Date du jour : $(date)"
+
+      - name: Install kubectl
+        uses: azure/setup-kubectl@v3
+        with:
+          version: 'latest'
+
+      - name: kubectl delete -f
+        run: kubectl delete -f "${{ github.event.inputs.path }}"
