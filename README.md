@@ -20,13 +20,14 @@ Persistent data is stored on a NAS mounted as a Samba subvolume on the host mach
 - [x] Deploy ArgoCD using Helm
 - [x] Deploy applications using GitOps
 - [x] Deploy a Kubernetes API Gateway (Traefik → Envoy)
+- [x] Secure a DNS hostname (piron-tech.com at OVH)
 - [x] Generate a Let's Encrypt certificate using cert-manager for the API Gateway
 - [x] Deploy a DNS server (bind)
 - [x] Secure application exposure to the Internet (rate limits & Google OAuth2)
 - [x] Monitor the cluster using Prometheus & Grafana
 - [x] Deploy GitHub Actions runners as pods on the Kubernetes cluster
 - [x] Deploy a registry (Harbor) with kyverno to enforce Harbor project usage for images
-- [ ] Deploy an IDP (Keycloak → X)
+- [X] Deploy an IDP (Keycloak → Authentik)
 - [ ] Migrate to Istio to implement a service mesh
 
 ---
@@ -77,7 +78,7 @@ GitOps-based deployment of all homelab applications
 - **MetalLB**: Bare-metal load balancer
 - **cert-manager**: Generates and renews TLS certificates for the cluster
 - **Kubernetes Dashboard**: Basic cluster state dashboard
-- **Keycloak**: Identity provider (IDP) for SSO
+- **Authentik**: Identity provider (IDP) for SSO (for Grafana and argocd)
 - **Harbor**: Private registry for container images
 - **Kyverno**: Policy engine to enforce Harbor usage and verify image signatures
 - **Prometheus**: Time-series database for Kubernetes and node metrics,
