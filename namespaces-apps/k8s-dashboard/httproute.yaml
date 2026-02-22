@@ -5,7 +5,7 @@ metadata:
   namespace: k8s-dashboard
 spec:
   hostnames:
-    - dashboard.piron.homelab
+    - dashboard.piron-tech.com
   parentRefs:
     - name: eg
       namespace: envoy-gateway-system
@@ -18,22 +18,6 @@ spec:
       backendRefs:
         - name: kubernetes-dashboard-kong-proxy
           port: 80
----
-# apiVersion: gateway.networking.k8s.io/v1
-# kind: BackendTLSPolicy
-# metadata:
-#   name: kubernetes-dashboard-tls
-#   namespace: k8s-dashboard
-# spec:
-#   targetRefs:
-#     - group: ""
-#       kind: Service
-#       name: kubernetes-dashboard-kong-proxy
-#       sectionName: kong-proxy-tls
-
-#   validation:
-#     hostname: kubernetes-dashboard-kong-proxy.k8s-dashboard.svc.cluster.local
-#     wellKnownCACertificates: System
 
 
 

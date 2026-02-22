@@ -1,20 +1,10 @@
-service:
-  annotations:
-    traefik.ingress.kubernetes.io/service.serversscheme: https
-    traefik.ingress.kubernetes.io/service.insecureSkipVerify: "true"
-
 protocolHttp: true
 
-# kong:
-#   enabled: true
-
-#   proxy:
-#     http:
-#       enabled: true
-#       servicePort: 80
-#       containerPort: 8000
-
-#     tls:
-#       enabled: true
-#       servicePort: 443
-#       containerPort: 8443
+kong:
+  proxy:
+    http:
+      enabled: true
+      servicePort: 80
+      containerPort: 8000
+    tls:
+      enabled: false
