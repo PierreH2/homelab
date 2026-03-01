@@ -26,9 +26,10 @@ Persistent data is stored on a NAS mounted as a Samba subvolume on the host mach
 - [x] Secure application exposure to the Internet (rate limits & Google OAuth2)
 - [x] Monitor the cluster using Prometheus & Grafana
 - [x] Deploy GitHub Actions runners as pods on the Kubernetes cluster
-- [x] Deploy a registry (Harbor) with kyverno to enforce Harbor project usage for images (registry.piron-tech.com/proxy/[NOM_DE_TON_IMAGE]:[TAG])
+- [x] Deploy a registry (Harbor) with kyverno to enforce Harbor project usage for images (registry.piron-tech.com/proxy/[IMAGE_NAME]:[TAG])
 - [X] Deploy an IDP (Keycloak → Authentik)
 - [ ] Migrate to Istio to implement a service mesh
+- [ ] Deploy a secret manager instead of using Kubernetes secrets (Vault)
 
 ---
 
@@ -64,9 +65,20 @@ Deployment includes:
 - Opening router firewall rules
 - TLS certificate management for the Gateway using cert-manager and Let's Encrypt
 
-### 3. Deploy applications (via ArgoCD)
+### 3. Deploy the monitoring stack (via ArgoCD)
+Deploy observability tools:
+- Prometheus for metrics collection
+- Grafana for dashboards and alerting
+
+### 4. Deploy the IDP and Registry (via ArgoCD)
+Deploy identity and image management:
+- Authentik as the Identity Provider (SSO for Grafana, ArgoCD, etc.)
+- Harbor as the private container registry
+- Kyverno to enforce image policies and verify signatures
+
+### 5. Deploy applications (via ArgoCD)
 GitOps-based deployment of all homelab applications
-(Prometheus, Grafana, Apache, Plex, etc.).
+(Apache, Plex, Kubernetes Dashboard, etc.).
 
 ---
 
