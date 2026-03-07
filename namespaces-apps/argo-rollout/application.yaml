@@ -6,21 +6,15 @@ metadata:
 spec:
   project: default
 
-  sources:
-    - repoURL: https://argoproj.github.io/argo-helm
-      targetRevision: 2.40.5
-      chart: argo-rollouts
-      helm:
-        releaseName: argo-rollouts
-        valueFiles:
-          - $values/namespaces-apps/argo-rollout/values-rollouts.yaml
-
-    - repoURL: https://github.com/PierreH2/homelab.git
-      targetRevision: main
-      path: namespaces-apps/argo-rollout
-      kustomize:
-        enableHelm: true
-      ref: values
+  source:
+    repoURL: https://argoproj.github.io/argo-helm
+    targetRevision: 2.40.5
+    chart: argo-rollouts
+    helm:
+      releaseName: argo-rollouts
+      values: |
+        dashboard:
+          enabled: true
 
   destination:
     server: https://kubernetes.default.svc
