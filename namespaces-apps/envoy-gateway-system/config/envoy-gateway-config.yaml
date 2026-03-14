@@ -54,7 +54,7 @@ metadata:
   name: envoy-envoy-gateway-system-eg-5391c79d
   namespace: envoy-gateway-system
   annotations:
-    metallb.universe.tf/loadBalancerIPs: 192.168.1.240
+    metallb.universe.tf/loadBalancerIPs: 192.168.1.241
 spec:
   type: LoadBalancer
   selector:
