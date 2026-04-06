@@ -28,6 +28,11 @@ server:
 
   extraInitContainers: []
 
+# Désactiver l'annotation prometheus.io/scrape sur kube-state-metrics
+# car on utilise une config statique dans serverFiles
+kube-state-metrics:
+  prometheusScrape: false
+
 serverFiles:
   prometheus.yml:
     scrape_configs:
@@ -35,7 +40,7 @@ serverFiles:
       - job_name: kube-state-metrics
         static_configs:
           - targets:
-              - kube-state-metrics.prometheus.svc.cluster.local:8080
+              - prometheus-kube-state-metrics.prometheus.svc.cluster.local:8080
 
       - job_name: node-exporter-vm
         static_configs:
