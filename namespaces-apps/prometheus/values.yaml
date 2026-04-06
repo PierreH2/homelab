@@ -33,6 +33,10 @@ server:
 kube-state-metrics:
   prometheusScrape: false
 
+# Utiliser la découverte automatique pour node-exporter
+prometheus-node-exporter:
+  prometheusScrape: true
+
 serverFiles:
   prometheus.yml:
     scrape_configs:
@@ -41,8 +45,3 @@ serverFiles:
         static_configs:
           - targets:
               - prometheus-kube-state-metrics.prometheus.svc.cluster.local:8080
-
-      - job_name: node-exporter-vm
-        static_configs:
-          - targets:
-              - 192.168.1.100:9100
