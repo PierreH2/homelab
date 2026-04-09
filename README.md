@@ -119,3 +119,9 @@ on each machine by editing:
 ### Bitnami discontinued Keycloak
 The keycloak official helm charts points to bitnami/... but it is now bitnamilegacy/... that contains the images. Fix must be made manually on the values.yaml
 
+### ASUS Fan Control (asusctl)
+ASUS ROG laptops require `asusctl` to control fan curves on Linux. Without it, fans may not respond to thermal load.
+
+### K3s Stop Leaves Zombie Pods
+`systemctl stop k3s` does not terminate containerd processes and leaves them in a "zombie" state. Use `k3s-killall.sh` to fully cleanup pods after k3s system stopped.
+
