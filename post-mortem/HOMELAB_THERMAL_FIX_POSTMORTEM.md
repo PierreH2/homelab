@@ -51,6 +51,13 @@ sudo chmod +x /usr/local/bin/k3s-*.sh
 ./scripts/install-k3s-night-mode.sh
 ```
 
+**⚠️ Fix Timer Bug (14 avril 2026)**:
+Les timers étaient `enabled` mais `inactive` (NEXT = "-") depuis le 10 avril. **Cause**: `k3s-killall.sh` stoppait `k3s-start-day.service` via glob `k3s*.service`, ce qui cascade-stoppait le timer via `Requires=`.
+
+**Fix appliqué**:
+- Suppression de `Requires=` dans les fichiers `.timer` (empêche cascade)
+- Ajout `systemctl start k3s-start-day.timer k3s-stop-night.timer` dans `k3s-stop.sh`
+
 ---
 
 ## Résultat Final

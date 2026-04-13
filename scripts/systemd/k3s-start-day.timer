@@ -1,0 +1,12 @@
+[Unit]
+Description=K3s Day Mode Timer - Start at 12h00
+
+[Timer]
+# Tous les jours à 12h (midi) précises
+OnCalendar=*-*-* 12:00:00
+
+# Pas de Persistent=true : si le PC était éteint à 12h on ne rattrape pas au boot
+# Le timer redémarre automatiquement via timers.target au prochain boot
+
+[Install]
+WantedBy=timers.target

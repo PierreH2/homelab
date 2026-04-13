@@ -1,0 +1,12 @@
+[Unit]
+Description=K3s Night Mode - Stop K3s
+After=k3s.service
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/bin/k3s-stop.sh
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=multi-user.target

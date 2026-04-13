@@ -26,18 +26,18 @@ fi
 
 echo ""
 echo "1️⃣  Copie des scripts..."
-sudo cp /home/pierre/homelab/scripts/k3s-stop.sh /usr/local/bin/
-sudo cp /home/pierre/homelab/scripts/k3s-start.sh /usr/local/bin/
+sudo cp /home/pierre/homelab/homelab/scripts/k3s-stop.sh /usr/local/bin/
+sudo cp /home/pierre/homelab/homelab/scripts/k3s-start.sh /usr/local/bin/
 sudo chmod +x /usr/local/bin/k3s-stop.sh
 sudo chmod +x /usr/local/bin/k3s-start.sh
 echo "   ✅ Scripts copiés dans /usr/local/bin/"
 
 echo ""
 echo "2️⃣  Installation des services systemd..."
-sudo cp /home/pierre/homelab/scripts/systemd/k3s-stop-night.service /etc/systemd/system/
-sudo cp /home/pierre/homelab/scripts/systemd/k3s-stop-night.timer /etc/systemd/system/
-sudo cp /home/pierre/homelab/scripts/systemd/k3s-start-day.service /etc/systemd/system/
-sudo cp /home/pierre/homelab/scripts/systemd/k3s-start-day.timer /etc/systemd/system/
+sudo cp /home/pierre/homelab/homelab/scripts/systemd/k3s-stop-night.service /etc/systemd/system/
+sudo cp /home/pierre/homelab/homelab/scripts/systemd/k3s-stop-night.timer /etc/systemd/system/
+sudo cp /home/pierre/homelab/homelab/scripts/systemd/k3s-start-day.service /etc/systemd/system/
+sudo cp /home/pierre/homelab/homelab/scripts/systemd/k3s-start-day.timer /etc/systemd/system/
 echo "   ✅ Services installés"
 
 echo ""

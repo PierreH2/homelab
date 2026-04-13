@@ -1,0 +1,12 @@
+[Unit]
+Description=K3s Night Mode Timer - Stop at 23h00
+
+[Timer]
+# Tous les jours à 23h précises
+OnCalendar=*-*-* 23:00:00
+
+# Pas de Persistent=true : si le PC était éteint à 23h on ne rattrape pas au boot
+# Le timer redémarre automatiquement via timers.target au prochain boot
+
+[Install]
+WantedBy=timers.target

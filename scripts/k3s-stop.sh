@@ -66,4 +66,9 @@ echo ""
 echo "🌡️  Température actuelle:"
 sensors 2>/dev/null | grep -E 'Tctl|cpu_fan' || echo "   (sensors non disponible)"
 
+# Relancer les timers night mode (k3s-killall.sh les stoppe via le glob k3s*.service)
+echo "🕐 Relance des timers night mode..."
+systemctl start k3s-start-day.timer k3s-stop-night.timer 2>/dev/null || true
+echo "   ✅ Timers relancés (prochain déclenchement: 12h00 et 23h00)"
+
 logger -t k3s-night-mode "K3s stopped completely (killall + quiet profile)"
