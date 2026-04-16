@@ -1,6 +1,6 @@
-# Fix Crashes Thermiques Homelab
+ Crashes Thermiques Homelab
 
-**Date**: Avril 6-9, 2026  
+**Date**: Avril 6-15, 2026  
 **Système**: Arch Linux K3s Homelab (AMD Ryzen 9 5900HX)
 
 ---
@@ -51,12 +51,23 @@ sudo chmod +x /usr/local/bin/k3s-*.sh
 ./scripts/install-k3s-night-mode.sh
 ```
 
-**⚠️ Fix Timer Bug (14 avril 2026)**:
-Les timers étaient `enabled` mais `inactive` (NEXT = "-") depuis le 10 avril. **Cause**: `k3s-killall.sh` stoppait `k3s-start-day.service` via glob `k3s*.service`, ce qui cascade-stoppait le timer via `Requires=`.
+**⚠️ Bugs découverts**:
 
-**Fix appliqué**:
-- Suppression de `Requires=` dans les fichiers `.timer` (empêche cascade)
-- Ajout `systemctl start k3s-start-day.timer k3s-stop-night.timer` dans `k3s-stop.sh`
+**14 avril**: Timers `inactive` (NEXT = "-"). **Cause**: `k3s-killall.sh` stoppait `k3s-start-day.service` via glob, cascade-stop du timer via `Requires=`.  
+**Fix**: Suppression `Requires=` dans `.timer`, restart timers dans `k3s-stop.sh`.
+
+**15 avril**: Script `k3s-stop.sh` tué avant fin → pods zombies + ventilateurs jamais en mode quiet → crash thermique.  
+**Fix**: killall + sleep 45s + quiet mode détachés en sous-shell `( ... ) &` (survit au SIGTERM).
+
+**15 avril**: Crashes ACPI (`x86/amd: ACPI power state transition occurred`) non-thermiques.  
+**Première tentative**: Masquage sleep targets (inefficace).  
+**Root cause trouvée**: supergfxctl (installé 6 avril) active **Nvidia Runtime PM Auto** → transitions D3↔D0 du GPU → bug firmware ASUS → système confond D-states (device) avec S-states (system) → S0 idle inattendu → crash.  
+**Fix définitif**: Désinstallation supergfxctl + règle udev forçant Nvidia en D0 permanent (pas de D3 transitions).
+
+```bash
+# /etc/udev/rules.d/80-nvidia-pm.rules
+ACTION=="add", SUBSYSTEM=="pci", ATTR{vendor}=="0x10de", ATTR{power/control}="on"
+```
 
 ---
 
@@ -65,6 +76,8 @@ Les timers étaient `enabled` mais `inactive` (NEXT = "-") depuis le 10 avril. *
 ✅ **Système stable** sans crashes thermiques  
 ✅ **Silence nocturne** (23h-12h) avec K3s arrêté  
 ✅ **Automatisation complète** via systemd timers  
+✅ **Protection ACPI** : Nvidia GPU forcé en D0 (pas de transitions D3 causant bugs firmware ASUS)  
+✅ **supergfxctl désinstallé** (causait instabilité GPU power management)  
 
 ---
 

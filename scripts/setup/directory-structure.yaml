@@ -1,0 +1,38 @@
+# Directory Structure for Homelab NAS
+# This file documents the directory structure created for persistent storage
+
+directories:
+  - path: /data/nas/private/prometheus
+    purpose: Prometheus time-series database storage
+    permissions: "777"
+    owner: pierre:pierre
+    
+  - path: /data/nas/private/grafana
+    purpose: Grafana dashboards and configuration
+    permissions: "777"
+    owner: pierre:pierre
+    
+  - path: /data/nas/public/registry
+    purpose: Docker registry image storage
+    permissions: "777"
+    owner: pierre:pierre
+    
+  - path: /data/nas/public/apache
+    purpose: Apache web server data
+    permissions: "777"
+    owner: pierre:pierre
+    
+  - path: /data/nas/public/plex/media
+    purpose: Plex media library (movies, TV shows, etc.)
+    permissions: "777"
+    owner: pierre:pierre
+    
+  - path: /data/nas/public/plex/config
+    purpose: Plex server configuration and metadata
+    permissions: "777"
+    owner: pierre:pierre
+
+notes:
+  - All directories use 777 permissions for Kubernetes pod accessibility
+  - Consider using PersistentVolumes with proper security contexts in production
+  - Backup strategy should cover /data/nas/private and /data/nas/public

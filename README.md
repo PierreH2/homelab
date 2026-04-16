@@ -28,6 +28,7 @@ Persistent data is stored on a NAS mounted as a Samba subvolume on the host mach
 - [x] Deploy GitHub Actions runners as pods on the Kubernetes cluster
 - [x] Deploy a registry (Harbor) with kyverno to enforce Harbor project usage for images (registry.piron-tech.com/proxy/[IMAGE_NAME]:[TAG])
 - [X] Deploy an IDP (Keycloak → Authentik)
+- [ ] Deploy Tempo & Loki for distributed tracing and log aggregation
 - [ ] Migrate to Istio to implement a service mesh
 - [ ] Deploy a secret manager instead of using Kubernetes secrets (Vault)
 
