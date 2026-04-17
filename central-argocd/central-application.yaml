@@ -1,0 +1,82 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: homelab-apps
+  namespace: argocd
+spec:
+  generators:
+    - list:
+        elements:
+          # Infrastructure critique
+          - name: metallb
+            path: apps/metallb
+            wave: 0
+          - name: envoy-gateway
+            path: apps/envoy-gateway-system
+            wave: 1
+          - name: harbor
+            path: apps/harbor
+            wave: 2
+          - name: kyverno
+            path: apps/kyverno
+            wave: 2
+          - name: cert-manager
+            path: apps/cert-manager
+            wave: 3
+          # Applications core
+          - name: argocd-config
+            path: apps/argocd-config
+            wave: 4
+          - name: argo-rollouts
+            path: apps/argo-rollout
+            wave: 4
+          - name: authentik
+            path: apps/authentik
+            wave: 9
+          - name: github-runners
+            path: apps/github-runners
+            wave: 9
+          # Observabilité
+          - name: grafana
+            path: apps/grafana
+            wave: 10
+          - name: prometheus
+            path: apps/prometheus
+            wave: 10
+          - name: oauth2-proxy
+            path: apps/oauth2-proxy
+            wave: 15
+          - name: k8s-dashboard
+            path: apps/k8s-dashboard
+            wave: 20
+          # Applicatifs
+          - name: http-server
+            path: apps/http-server
+            wave: 30
+          - name: plex
+            path: apps/plex
+            wave: 30
+          - name: guestbook
+            path: apps/guestbook
+            wave: 30
+  template:
+    metadata:
+      name: "{{ name }}"
+      namespace: argocd
+    spec:
+      project: default
+      syncPolicy:
+        automated:
+          prune: true
+          selfHeal: true
+        syncOptions:
+          - CreateNamespace=true
+      syncWaves:
+        - wave: "{{ wave }}"
+      destination:
+        server: https://kubernetes.default.svc
+        namespace: argocd
+      source:
+        repoURL: https://github.com/PierreH2/homelab.git
+        targetRevision: main
+        path: "{{ path }}"

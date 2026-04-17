@@ -1,0 +1,19 @@
+# Values for envoy-gateway Helm chart
+# Chart: docker.io/envoyproxy/gateway-helm v1.6.1
+# Ref: https://gateway.envoyproxy.io/docs/install/install-helm/
+
+deployment:
+  envoyGateway:
+    resources:
+      requests:
+        cpu: 100m
+        memory: 256Mi
+      limits:
+        cpu: 500m
+        memory: 1024Mi
+
+config:
+  envoyGateway:
+    logging:
+      level:
+        default: info

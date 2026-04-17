@@ -1,0 +1,38 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: github-runners
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: default
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: github-runners
+  sources:
+    - repoURL: https://github.com/PierreH2/homelab.git
+      targetRevision: main
+      ref: values
+    - repoURL: https://github.com/PierreH2/homelab.git
+      targetRevision: main
+      path: apps/github-runners/prerequisite
+      syncWave: 0
+    - repoURL: https://actions-runner-controller.github.io/actions-runner-controller
+      chart: actions-runner-controller
+      targetRevision: "0.23.7"
+      syncWave: 1
+      helm:
+        releaseName: actions-runner-controller
+        valueFiles:
+          - $values/apps/github-runners/values/values.yaml
+    - repoURL: https://github.com/PierreH2/homelab.git
+      targetRevision: main
+      path: apps/github-runners/yaml
+      syncWave: 2
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true

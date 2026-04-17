@@ -1,0 +1,73 @@
+service:
+  enabled: true
+  type: ClusterIP
+  port: 80
+  targetPort: 3000
+
+resources:
+  limits:
+    cpu: 300m
+    memory: 1Gi
+
+persistence:
+  enabled: true
+  type: pvc
+  existingClaim: grafana-pvc
+
+initChownData:
+  enabled: false
+
+envValueFrom:
+  GF_AUTH_GENERIC_OAUTH_CLIENT_SECRET:
+    secretKeyRef:
+      name: grafana-authentik-secret
+      key: client-secret
+
+grafana.ini:
+  server:
+    root_url: "https://grafana.piron-tech.com/"
+    serve_from_sub_path: false
+  auth:
+    signout_redirect_url: "https://authentik.piron-tech.com/application/o/grafana/end-session/"
+    oauth_auto_login: true
+  users:
+    auto_assign_org: true
+    auto_assign_org_id: 1
+    auto_assign_org_role: Viewer
+  auth.generic_oauth:
+    enabled: true
+    name: "Authentik"
+    client_id: "BcF4HHxCwGVUyWvI6u9NpZyiGSBjhMPFhmeFKT5G"
+    client_secret: "$__env{GF_AUTH_GENERIC_OAUTH_CLIENT_SECRET}"
+    scopes: "openid profile email"
+    auth_url: "https://authentik.piron-tech.com/application/o/authorize/"
+    token_url: "https://authentik.piron-tech.com/application/o/token/"
+    api_url: "https://authentik.piron-tech.com/application/o/userinfo/"
+#    email_attribute_path: "email"
+#    login_attribute_path: "email"
+#    name_attribute_path: "name"
+    role_attribute_path: "contains(groups, 'Grafana Admins') && 'Admin' || 'Viewer'"
+
+
+
+
+# If you use Gateway API, usually keep classic ingress disabled
+ingress:
+  enabled: false
+
+# Gateway API (BETA in this chart)
+route:
+  main:
+    enabled: true
+    apiVersion: gateway.networking.k8s.io/v1
+    kind: HTTPRoute
+    parentRefs:
+      - name: eg
+        namespace: envoy-gateway-system
+        sectionName: https
+    hostnames:
+      - grafana.piron-tech.com
+    matches:
+      - path:
+          type: PathPrefix
+          value: /

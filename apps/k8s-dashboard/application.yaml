@@ -1,0 +1,38 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: k8s-dashboard
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: default
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: k8s-dashboard
+  sources:
+    - repoURL: https://github.com/PierreH2/homelab.git
+      targetRevision: main
+      ref: values
+    - repoURL: https://github.com/PierreH2/homelab.git
+      targetRevision: main
+      path: apps/k8s-dashboard/prerequisite
+      syncWave: 0
+    - repoURL: https://github.com/kubernetes/dashboard.git
+      targetRevision: master
+      path: charts/kubernetes-dashboard
+      syncWave: 1
+      helm:
+        releaseName: kubernetes-dashboard
+        valueFiles:
+          - $values/apps/k8s-dashboard/values/values.yaml
+    - repoURL: https://github.com/PierreH2/homelab.git
+      targetRevision: main
+      path: apps/k8s-dashboard/yaml
+      syncWave: 2
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true

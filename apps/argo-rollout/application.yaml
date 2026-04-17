@@ -1,0 +1,34 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: argo-rollouts
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: default
+  syncWaves:
+    - wave: 3
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: argo-rollouts
+  sources:
+    - repoURL: https://argoproj.github.io/argo-helm
+      targetRevision: 2.40.5
+      chart: argo-rollouts
+      syncWave: 0
+      helm:
+        releaseName: argo-rollouts
+        values: |
+          dashboard:
+            enabled: true
+    - repoURL: https://github.com/PierreH2/homelab.git
+      targetRevision: main
+      path: apps/argo-rollout/yaml
+      syncWave: 1
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
