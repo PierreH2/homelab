@@ -52,34 +52,50 @@ Persistent data is stored on a NAS mounted as a Samba subvolume on the host mach
 
 ## Quick Deployment Guide
 
-### 0. Load variables
-Deploy and configure a Linux OS, then deploy a Kubernetes cluster (K3S was used).
+### Step 1 — Run the setup script
+Configure the OS and deploy K3S by running the setup script:
 
-### 1. Deploy ArgoCD
-ArgoCD is deployed initially via Helm.
-All deployments in steps 3 and 4 are managed through ArgoCD Applications.
+```bash
+bash scripts/setup/setup-fedora-homelab.sh
+```
 
-### 2. Deploy the Gateway, Load Balancer, and cert-manager (via ArgoCD)
-Deployment includes:
-- A Kubernetes Gateway (Envoy)
-- DNS record purchase (OVH)
-- Opening router firewall rules
-- TLS certificate management for the Gateway using cert-manager and Let's Encrypt
+This script:
+- Disables the GUI
+- Installs required packages (kubectl, Helm, Docker, etc.)
+- Creates the required directory structure
+- Deploys K3S
 
-### 3. Deploy the monitoring stack (via ArgoCD)
-Deploy observability tools:
-- Prometheus for metrics collection
-- Grafana for dashboards and alerting
+### Step 2 — Bootstrap ArgoCD
+Deploy ArgoCD manually using Kustomize:
 
-### 4. Deploy the IDP and Registry (via ArgoCD)
-Deploy identity and image management:
-- Authentik as the Identity Provider (SSO for Grafana, ArgoCD, etc.)
-- Harbor as the private container registry
-- Kyverno to enforce image policies and verify signatures
+```bash
+kubectl apply -k central-argocd/argocd/
+```
 
-### 5. Deploy applications (via ArgoCD)
-GitOps-based deployment of all homelab applications
-(Apache, Plex, Kubernetes Dashboard, etc.).
+Wait for ArgoCD to become healthy, then retrieve the initial admin password:
+
+```bash
+kubectl -n argocd get secret argocd-initial-admin-secret \
+  -o jsonpath="{.data.password}" | base64 -d
+```
+
+See `central-argocd/BOOTSTRAP.md` for more details.
+
+### Step 3 — Deploy the central ApplicationSet (App-of-Apps)
+Apply the central ApplicationSet that manages the entire stack via the App-of-Apps pattern:
+
+```bash
+kubectl apply -f central-argocd/central-application.yaml
+```
+
+This ApplicationSet deploys all applications in dependency order (using sync waves):
+- **Wave 0–1**: Infrastructure (MetalLB, Envoy Gateway)
+- **Wave 2–3**: Registry & policy (Harbor, Kyverno, cert-manager)
+- **Wave 4**: GitOps & rollouts (ArgoCD config, Argo Rollouts)
+- **Wave 9**: Auth & CI (Authentik, GitHub Runners)
+- **Wave 10+**: Observability & applications (Grafana, Prometheus, OAuth2 Proxy, Dashboard, Plex, etc.)
+
+ArgoCD will continuously reconcile all apps from this repository.
 
 ---
 
@@ -122,6 +138,8 @@ The keycloak official helm charts points to bitnami/... but it is now bitnamileg
 
 ### ASUS Fan Control (asusctl)
 ASUS ROG laptops require `asusctl` to control fan curves on Linux. Without it, fans may not respond to thermal load.
+
+**`asusctl` is not supported on Ubuntu.** The tool relies on kernel modules and DKMS packages that are only available for Arch Linux and Fedora. On Ubuntu, these packages are absent and the kernel module cannot be compiled, making fan curve control unavailable. 
 
 ### K3s Stop Leaves Zombie Pods
 `systemctl stop k3s` does not terminate containerd processes and leaves them in a "zombie" state. Use `k3s-killall.sh` to fully cleanup pods after k3s system stopped.
