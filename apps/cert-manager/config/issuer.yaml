@@ -15,8 +15,8 @@ spec:
             solverName: ovh
             config:
               endpoint: ovh-eu
-              applicationKey: "3c898652dd8634ba"
-              consumerKey: "360fc2978b5c9d379076ec08eff57294"
+              applicationKey: "351565ee6eff35a9"
+              consumerKey: "e7315e30d7ef24bffbee9cfea2b6bbd5"
               applicationSecretRef:
                 name: ovh-dns-credentials
                 key: applicationSecret
