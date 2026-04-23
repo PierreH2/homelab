@@ -39,7 +39,10 @@ spec:
         - .spec.healthCheckNodePort
         - .spec.ports[].nodePort
         - .metadata.annotations
+        - .metadata.finalizers
     - group: gateway.networking.k8s.io
       kind: Gateway
       jqPathExpressions:
         - .status
+        - .metadata.annotations
+        - .metadata.finalizers
