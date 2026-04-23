@@ -17,14 +17,12 @@ spec:
     - repoURL: docker.io/envoyproxy
       chart: gateway-helm
       targetRevision: v1.6.1
-      syncWave: 0
       helm:
         valueFiles:
           - $values/apps/envoy-gateway-system/values/values.yaml
     - repoURL: https://github.com/PierreH2/homelab.git
       targetRevision: main
       path: apps/envoy-gateway-system/config
-      syncWave: 1
   syncPolicy:
     automated:
       prune: true

@@ -14,11 +14,9 @@ spec:
     - repoURL: https://github.com/PierreH2/homelab.git
       targetRevision: main
       path: apps/http-server/prerequisite
-      syncWave: 0
     - repoURL: https://github.com/PierreH2/homelab.git
       targetRevision: main
       path: apps/http-server/yaml
-      syncWave: 1
   syncPolicy:
     automated:
       prune: true

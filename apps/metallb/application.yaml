@@ -14,11 +14,9 @@ spec:
     - repoURL: https://github.com/PierreH2/homelab.git
       targetRevision: main
       path: apps/metallb/prerequisite
-      syncWave: 0
     - repoURL: https://github.com/PierreH2/homelab.git
       targetRevision: main
       path: apps/metallb/yaml
-      syncWave: 1
   syncPolicy:
     automated:
       prune: true

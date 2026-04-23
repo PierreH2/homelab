@@ -17,11 +17,9 @@ spec:
     - repoURL: https://github.com/PierreH2/homelab.git
       targetRevision: main
       path: apps/harbor/prerequisite
-      syncWave: 0
     - repoURL: https://helm.goharbor.io
       chart: harbor
       targetRevision: "1.18.*"
-      syncWave: 1
       helm:
         releaseName: harbor
         valueFiles:
@@ -29,7 +27,6 @@ spec:
     - repoURL: https://github.com/PierreH2/homelab.git
       targetRevision: main
       path: apps/harbor/yaml
-      syncWave: 2
   syncPolicy:
     automated:
       prune: true

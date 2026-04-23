@@ -17,7 +17,6 @@ spec:
     - repoURL: https://prometheus-community.github.io/helm-charts
       chart: prometheus
       targetRevision: "28.2.1"
-      syncWave: 0
       helm:
         releaseName: prometheus
         valueFiles:
@@ -25,7 +24,6 @@ spec:
     - repoURL: https://github.com/PierreH2/homelab.git
       targetRevision: main
       path: apps/prometheus/yaml
-      syncWave: 1
   syncPolicy:
     automated:
       prune: true

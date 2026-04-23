@@ -17,11 +17,9 @@ spec:
     - repoURL: https://github.com/PierreH2/homelab.git
       targetRevision: main
       path: apps/github-runners/prerequisite
-      syncWave: 0
     - repoURL: https://actions-runner-controller.github.io/actions-runner-controller
       chart: actions-runner-controller
       targetRevision: "0.23.7"
-      syncWave: 1
       helm:
         releaseName: actions-runner-controller
         valueFiles:
@@ -29,7 +27,6 @@ spec:
     - repoURL: https://github.com/PierreH2/homelab.git
       targetRevision: main
       path: apps/github-runners/yaml
-      syncWave: 2
   syncPolicy:
     automated:
       prune: true

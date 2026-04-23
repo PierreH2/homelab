@@ -7,8 +7,6 @@ metadata:
     - resources-finalizer.argocd.argoproj.io
 spec:
   project: default
-  syncWaves:
-    - wave: 3
   destination:
     server: https://kubernetes.default.svc
     namespace: argo-rollouts
@@ -16,7 +14,6 @@ spec:
     - repoURL: https://argoproj.github.io/argo-helm
       targetRevision: 2.40.5
       chart: argo-rollouts
-      syncWave: 0
       helm:
         releaseName: argo-rollouts
         values: |
@@ -25,7 +22,6 @@ spec:
     - repoURL: https://github.com/PierreH2/homelab.git
       targetRevision: main
       path: apps/argo-rollout/yaml
-      syncWave: 1
   syncPolicy:
     automated:
       prune: true

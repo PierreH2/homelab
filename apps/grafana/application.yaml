@@ -17,11 +17,9 @@ spec:
     - repoURL: https://github.com/PierreH2/homelab.git
       targetRevision: main
       path: apps/grafana/prerequisite
-      syncWave: 0
     - repoURL: https://grafana.github.io/helm-charts
       chart: grafana
       targetRevision: "10.*"
-      syncWave: 1
       helm:
         releaseName: grafana
         valueFiles:
@@ -29,7 +27,6 @@ spec:
     - repoURL: https://github.com/PierreH2/homelab.git
       targetRevision: main
       path: apps/grafana/yaml
-      syncWave: 2
   syncPolicy:
     automated:
       prune: true

@@ -7,8 +7,6 @@ metadata:
     - resources-finalizer.argocd.argoproj.io
 spec:
   project: default
-  syncWaves:
-    - wave: 3
   destination:
     server: https://kubernetes.default.svc
     namespace: authentik
@@ -19,11 +17,9 @@ spec:
     - repoURL: https://github.com/PierreH2/homelab.git
       targetRevision: main
       path: apps/authentik/prerequisite
-      syncWave: 0
     - repoURL: https://charts.goauthentik.io
       chart: authentik
       targetRevision: "2025.12.3"
-      syncWave: 1
       helm:
         releaseName: authentik
         valueFiles:
@@ -31,7 +27,6 @@ spec:
     - repoURL: https://github.com/PierreH2/homelab.git
       targetRevision: main
       path: apps/authentik/yaml
-      syncWave: 2
   syncPolicy:
     automated:
       prune: true

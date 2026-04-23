@@ -7,8 +7,6 @@ metadata:
     - resources-finalizer.argocd.argoproj.io
 spec:
   project: default
-  syncWaves:
-    - wave: 0
   destination:
     server: https://kubernetes.default.svc
     namespace: cert-manager
@@ -16,22 +14,18 @@ spec:
     - repoURL: https://github.com/PierreH2/homelab.git
       targetRevision: main
       path: apps/cert-manager/prerequisite
-      syncWave: 0
     - repoURL: https://charts.jetstack.io
       chart: cert-manager
       targetRevision: v1.14.4
-      syncWave: 1
       helm:
         values: |
           installCRDs: true
     - repoURL: https://github.com/PierreH2/homelab.git
       targetRevision: main
       path: apps/cert-manager/yaml
-      syncWave: 2
     - repoURL: https://github.com/PierreH2/homelab.git
       targetRevision: main
       path: apps/cert-manager/config
-      syncWave: 3
   syncPolicy:
     automated:
       prune: true

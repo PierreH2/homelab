@@ -17,7 +17,6 @@ spec:
     - repoURL: https://oauth2-proxy.github.io/manifests
       chart: oauth2-proxy
       targetRevision: "7.*"
-      syncWave: 0
       helm:
         releaseName: oauth2-proxy
         valueFiles:
