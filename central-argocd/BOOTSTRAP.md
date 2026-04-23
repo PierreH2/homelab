@@ -32,3 +32,22 @@ kubectl apply -f central-application.yaml
 
 Once ArgoCD is healthy, the ApplicationSet will manage all your applications.
 
+### Step 5: Fix DNS resolution (if needed)
+If applications fail with DNS errors (e.g., "server misbehaving" or "dial tcp: lookup github.com"), fix CoreDNS to use public DNS servers:
+
+```bash
+# Patch CoreDNS to use Google DNS and Cloudflare
+kubectl patch configmap coredns -n kube-system --type merge -p '{"data":{"Corefile":".:53 {\n    errors\n    health\n    ready\n    kubernetes cluster.local in-addr.arpa ip6.arpa {\n      pods insecure\n      fallthrough in-addr.arpa ip6.arpa\n    }\n    hosts /etc/coredns/NodeHosts {\n      ttl 60\n      reload 15s\n      fallthrough\n    }\n    prometheus :9153\n    cache 30\n    loop\n    reload\n    loadbalance\n    import /etc/coredns/custom/*.override\n    forward . 8.8.8.8 1.1.1.1\n}\nimport /etc/coredns/custom/*.server\n"}}'
+
+# Restart CoreDNS
+kubectl rollout restart deployment coredns -n kube-system
+
+# Wait for CoreDNS to be ready
+kubectl wait --for=condition=ready pod -l k8s-app=kube-dns -n kube-system --timeout=60s
+
+# Verify DNS works
+kubectl run -it --rm debug-dns --image=busybox --restart=Never -- nslookup github.com
+```
+
+This resolves issues when the host's DNS (systemd-resolved) uses unreachable IPv6 servers.
+
