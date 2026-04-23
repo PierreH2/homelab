@@ -30,3 +30,16 @@ spec:
     syncOptions:
       - CreateNamespace=true
       - ServerSideApply=true
+  ignoreDifferences:
+    - group: ""
+      kind: Service
+      jqPathExpressions:
+        - .spec.clusterIP
+        - .spec.clusterIPs
+        - .spec.healthCheckNodePort
+        - .spec.ports[].nodePort
+        - .metadata.annotations
+    - group: gateway.networking.k8s.io
+      kind: Gateway
+      jqPathExpressions:
+        - .status
