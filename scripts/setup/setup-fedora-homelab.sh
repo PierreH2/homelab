@@ -70,14 +70,22 @@ if ! command -v ansible &> /dev/null; then
     sudo dnf install -y ansible
 fi
 
-# ASUS-specific tools (asusctl + supergfx)
+# ASUS-specific tools (asusctl only - NOT supergfxctl)
+# Note: supergfxctl causes ACPI crashes on ASUS firmware (bug with D-state transitions)
+#       See: https://github.com/PierreH2/homelab for fix scripts
 echo "Installing ASUS control tools..."
 if ! dnf copr list | grep -q "lukenukem/asus-linux"; then
     sudo dnf copr enable -y lukenukem/asus-linux
 fi
-sudo dnf install -y asusctl supergfxctl
-# asusd starts automatically via D-Bus, just start supergfxd
-sudo systemctl enable --now supergfxd.service 2>/dev/null || true
+sudo dnf install -y asusctl
+# asusd starts automatically via D-Bus (no manual start needed)
+
+# Disable all LED lighting
+echo "Disabling keyboard/system LED lighting..."
+sleep 2  # Wait for asusd to be ready
+asusctl led-mode static -c 000000 2>/dev/null || asusctl -k off 2>/dev/null || true
+# Disable LED brightness completely
+asusctl -k 0 2>/dev/null || true
 
 echo "✓ Packages installed"
 
@@ -112,16 +120,27 @@ sudo chown -R $USER:$USER /data/nas
 echo "✓ Directory structure created"
 
 # ============================================================================
-# 3. CONFIGURE SELINUX (for K3s)
+# 3. CONFIGURE SELINUX (for K3s) & SYSTEM SETTINGS
 # ============================================================================
 echo ""
-echo "[3/4] Configuring SELinux..."
+echo "[3/4] Configuring SELinux and system settings..."
 
 # Set SELinux to permissive mode for K3s
 sudo setenforce 0
 sudo sed -i 's/^SELINUX=enforcing/SELINUX=permissive/' /etc/selinux/config
 
-echo "✓ SELinux configured"
+# Disable lid suspend (prevent sleep when closing laptop lid)
+echo "Configuring lid behavior (no suspend on lid close)..."
+sudo mkdir -p /etc/systemd/logind.conf.d
+sudo tee /etc/systemd/logind.conf.d/00-homelab-lid.conf > /dev/null <<EOF
+[Login]
+HandleLidSwitch=ignore
+HandleLidSwitchExternalPower=ignore
+HandleLidSwitchDocked=ignore
+EOF
+sudo systemctl restart systemd-logind
+
+echo "✓ SELinux and system settings configured"
 
 # ============================================================================
 # 4. DEPLOY K3S
@@ -186,4 +205,6 @@ echo "5. Deploy your apps from homelab repo"
 echo ""
 echo "KUBECONFIG: \$HOME/kube/config"
 echo "GUI: Disabled (multi-user.target)"
+echo "LED: Disabled (to re-enable: asusctl -k 3)"
+echo "Lid: Suspend disabled (lid close won't sleep the system)"
 echo ""
