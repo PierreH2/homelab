@@ -10,11 +10,11 @@ persistence:
   resourcePolicy: "keep"
   persistentVolumeClaim:
     registry:
-      existingClaim: ""
+      existingClaim: "harbor-nas-pvc"
       storageClass: ""
-      subPath: "registry"
+      subPath: ""
       accessMode: ReadWriteOnce
-      size: 15Gi
+      size: 25Gi
     database:
       existingClaim: ""
       storageClass: ""
