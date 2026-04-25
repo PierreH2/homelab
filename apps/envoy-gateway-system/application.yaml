@@ -30,15 +30,10 @@ spec:
     syncOptions:
       - CreateNamespace=true
       - ServerSideApply=true
+    managedNamespaceMetadata:
+      labels:
+        argocd.argoproj.io/managed-by: argocd
   ignoreDifferences:
-    - group: ""
-      kind: Service
-      name: envoy-envoy-gateway-system-eg-*
-      jqPathExpressions:
-        - .spec
-        - .metadata.annotations
-        - .metadata.finalizers
-        - .metadata.ownerReferences
     - group: ""
       kind: Service
       jqPathExpressions:
@@ -46,8 +41,13 @@ spec:
         - .spec.clusterIPs
         - .spec.healthCheckNodePort
         - .spec.ports[].nodePort
+        - .spec.externalTrafficPolicy
+        - .spec.allocateLoadBalancerNodePorts
         - .metadata.annotations
         - .metadata.finalizers
+        - .metadata.ownerReferences
+        - .metadata.resourceVersion
+        - .status
     - group: gateway.networking.k8s.io
       kind: Gateway
       jqPathExpressions:
