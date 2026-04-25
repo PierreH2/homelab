@@ -49,5 +49,14 @@ kubectl wait --for=condition=ready pod -l k8s-app=kube-dns -n kube-system --time
 kubectl run -it --rm debug-dns --image=busybox --restart=Never -- nslookup github.com
 ```
 
+### Alternative: Permanent CoreDNS fix
+For a fix that survives K3s restarts, modify the source manifest directly:
+
+```bash
+sudo sed -i 's|forward . /etc/resolv.conf|forward . 8.8.8.8 1.1.1.1|' /var/lib/rancher/k3s/server/manifests/coredns.yaml
+```
+
+K3s will automatically reconcile and apply the change.
+
 This resolves issues when the host's DNS (systemd-resolved) uses unreachable IPv6 servers.
 
