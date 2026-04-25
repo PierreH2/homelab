@@ -36,27 +36,14 @@ Once ArgoCD is healthy, the ApplicationSet will manage all your applications.
 If applications fail with DNS errors (e.g., "server misbehaving" or "dial tcp: lookup github.com"), fix CoreDNS to use public DNS servers:
 
 ```bash
-# Patch CoreDNS to use Google DNS and Cloudflare
-kubectl patch configmap coredns -n kube-system --type merge -p '{"data":{"Corefile":".:53 {\n    errors\n    health\n    ready\n    kubernetes cluster.local in-addr.arpa ip6.arpa {\n      pods insecure\n      fallthrough in-addr.arpa ip6.arpa\n    }\n    hosts /etc/coredns/NodeHosts {\n      ttl 60\n      reload 15s\n      fallthrough\n    }\n    prometheus :9153\n    cache 30\n    loop\n    reload\n    loadbalance\n    import /etc/coredns/custom/*.override\n    forward . 8.8.8.8 1.1.1.1\n}\nimport /etc/coredns/custom/*.server\n"}}'
+# Modify CoreDNS manifest
+sudo sed -i 's|forward . /etc/resolv.conf|forward . 8.8.8.8 1.1.1.1|' /var/lib/rancher/k3s/server/manifests/coredns.yaml
 
-# Restart CoreDNS
-kubectl rollout restart deployment coredns -n kube-system
-
-# Wait for CoreDNS to be ready
-kubectl wait --for=condition=ready pod -l k8s-app=kube-dns -n kube-system --timeout=60s
+# Restart CoreDNS pods to apply changes
+kubectl -n kube-system rollout restart deployment coredns
 
 # Verify DNS works
 kubectl run -it --rm debug-dns --image=busybox --restart=Never -- nslookup github.com
 ```
 
-### Alternative: Permanent CoreDNS fix
-For a fix that survives K3s restarts, modify the source manifest directly:
-
-```bash
-sudo sed -i 's|forward . /etc/resolv.conf|forward . 8.8.8.8 1.1.1.1|' /var/lib/rancher/k3s/server/manifests/coredns.yaml
-```
-
-K3s will automatically reconcile and apply the change.
-
 This resolves issues when the host's DNS (systemd-resolved) uses unreachable IPv6 servers.
-

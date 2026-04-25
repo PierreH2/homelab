@@ -12,7 +12,7 @@ echo "=== Fedora Homelab Setup ==="
 # 0. DISABLE GUI (PERMANENT)
 # ============================================================================
 echo ""
-echo "[0/4] Disabling GUI permanently..."
+echo "[0/7] Disabling GUI permanently..."
 
 sudo systemctl set-default multi-user.target
 echo "✓ GUI disabled (will take effect on next boot)"
@@ -21,7 +21,7 @@ echo "✓ GUI disabled (will take effect on next boot)"
 # 1. INSTALL PACKAGES
 # ============================================================================
 echo ""
-echo "[1/4] Installing packages..."
+echo "[1/7] Installing packages..."
 
 sudo dnf update -y
 
@@ -93,7 +93,7 @@ echo "✓ Packages installed"
 # 2. CREATE DIRECTORY STRUCTURE
 # ============================================================================
 echo ""
-echo "[2/4] Creating directory structure..."
+echo "[2/7] Creating directory structure..."
 
 # Define directories
 DIRS=(
@@ -123,7 +123,7 @@ echo "✓ Directory structure created"
 # 3. CONFIGURE SELINUX (for K3s) & SYSTEM SETTINGS
 # ============================================================================
 echo ""
-echo "[3/4] Configuring SELinux and system settings..."
+echo "[3/7] Configuring SELinux and system settings..."
 
 # Set SELinux to permissive mode for K3s
 sudo setenforce 0
@@ -143,10 +143,68 @@ sudo systemctl restart systemd-logind
 echo "✓ SELinux and system settings configured"
 
 # ============================================================================
-# 4. DEPLOY K3S
+# 4. CONFIGURE FIREWALLD FOR K3S
 # ============================================================================
 echo ""
-echo "[4/4] Deploying K3s..."
+echo "[4/7] Configuring firewalld for K3s..."
+
+# Open K3s ports
+echo "Opening K3s ports..."
+sudo firewall-cmd --permanent --add-port=6443/tcp     # API server
+sudo firewall-cmd --permanent --add-port=10250/tcp    # Kubelet
+sudo firewall-cmd --permanent --add-port=8472/udp     # Flannel VXLAN
+sudo firewall-cmd --permanent --add-port=51820/udp    # Flannel Wireguard
+sudo firewall-cmd --permanent --add-port=51821/udp    # Flannel Wireguard
+
+# Enable masquerade for NAT
+echo "Enabling masquerade..."
+sudo firewall-cmd --permanent --add-masquerade
+
+# Add CNI interfaces to trusted zone
+echo "Configuring trusted zone for CNI..."
+sudo firewall-cmd --permanent --zone=trusted --add-interface=cni0 2>/dev/null || true
+sudo firewall-cmd --permanent --zone=trusted --add-interface=flannel.1 2>/dev/null || true
+
+# Add Pod and Service CIDR to trusted zone
+echo "Adding Pod and Service CIDR to trusted zone..."
+sudo firewall-cmd --permanent --zone=trusted --add-source=10.42.0.0/16  # Pod CIDR
+sudo firewall-cmd --permanent --zone=trusted --add-source=10.43.0.0/16  # Service CIDR
+
+# Reload firewalld
+echo "Reloading firewalld..."
+sudo firewall-cmd --reload
+
+echo "✓ Firewalld configured for K3s"
+
+# ============================================================================
+# 5. CONFIGURE KERNEL PARAMETERS FOR K3S
+# ============================================================================
+echo ""
+echo "[5/7] Configuring kernel parameters for K3s..."
+
+# Create sysctl configuration for K3s
+sudo tee /etc/sysctl.d/k3s.conf > /dev/null <<EOF
+net.ipv4.ip_forward = 1
+net.bridge.bridge-nf-call-iptables = 1
+net.bridge.bridge-nf-call-ip6tables = 1
+EOF
+
+# Load br_netfilter module
+sudo modprobe br_netfilter
+
+# Make br_netfilter load on boot
+echo "br_netfilter" | sudo tee /etc/modules-load.d/k3s.conf
+
+# Apply sysctl settings
+sudo sysctl --system
+
+echo "✓ Kernel parameters configured"
+
+# ============================================================================
+# 6. DEPLOY K3S
+# ============================================================================
+echo ""
+echo "[6/7] Deploying K3s..."
 
 if ! command -v k3s &> /dev/null; then
     echo "Installing K3s..."
@@ -189,12 +247,40 @@ kubectl get nodes
 echo "✓ K3s deployed and configured"
 
 # ============================================================================
+# 7. VERIFY K3S NETWORKING CONFIGURATION
+# ============================================================================
+echo ""
+echo "[7/7] Verifying K3s networking configuration..."
+
+# Wait for CNI interfaces to be created
+sleep 5
+
+# Add CNI interfaces to trusted zone (may have been created after K3s install)
+sudo firewall-cmd --permanent --zone=trusted --add-interface=cni0 2>/dev/null || true
+sudo firewall-cmd --permanent --zone=trusted --add-interface=flannel.1 2>/dev/null || true
+sudo firewall-cmd --reload
+
+echo "Firewall configuration:"
+sudo firewall-cmd --zone=trusted --list-all
+
+echo "✓ K3s networking verified"
+
+# ============================================================================
 # SUMMARY
 # ============================================================================
 echo ""
 echo "==================================="
 echo "✓ Setup Complete!"
 echo "==================================="
+echo ""
+echo "Configuration applied:"
+echo "✓ Packages installed (Docker, kubectl, Helm, Terraform, Ansible)"
+echo "✓ Directory structure created (/data/nas)"
+echo "✓ SELinux set to permissive mode"
+echo "✓ Lid suspend disabled"
+echo "✓ Firewalld configured for K3s (ports, masquerade, trusted zones)"
+echo "✓ Kernel parameters configured (IP forwarding, bridge netfilter)"
+echo "✓ K3s deployed and configured"
 echo ""
 echo "Next steps:"
 echo "1. Reboot to disable GUI: sudo reboot"
@@ -207,4 +293,5 @@ echo "KUBECONFIG: \$HOME/kube/config"
 echo "GUI: Disabled (multi-user.target)"
 echo "LED: Disabled (to re-enable: asusctl -k 3)"
 echo "Lid: Suspend disabled (lid close won't sleep the system)"
+echo "Firewalld: Configured for K3s with masquerade and trusted zones"
 echo ""

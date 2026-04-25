@@ -5,11 +5,11 @@ metadata:
   namespace: argocd
 spec:
   parentRefs:
-    - name: main-gateway
+    - name: eg
       namespace: envoy-gateway-system
   hostnames:
     - argocd.piron-tech.com
   rules:
     - backendRefs:
-        - name: argo-cd-server
+        - name: argo-cd-argocd-server
           port: 80
