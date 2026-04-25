@@ -33,6 +33,14 @@ spec:
   ignoreDifferences:
     - group: ""
       kind: Service
+      name: envoy-envoy-gateway-system-eg-*
+      jqPathExpressions:
+        - .spec
+        - .metadata.annotations
+        - .metadata.finalizers
+        - .metadata.ownerReferences
+    - group: ""
+      kind: Service
       jqPathExpressions:
         - .spec.clusterIP
         - .spec.clusterIPs
