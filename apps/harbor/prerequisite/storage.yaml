@@ -1,4 +1,10 @@
-# storage-harbor.yaml
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: harbor-hostpath
+provisioner: kubernetes.io/no-provisioner
+volumeBindingMode: WaitForFirstConsumer
+---
 apiVersion: v1
 kind: PersistentVolume
 metadata:
@@ -6,9 +12,13 @@ metadata:
 spec:
   capacity:
     storage: 25Gi
-  accessModes: [ReadWriteOnce]
+  accessModes:
+    - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: harbor-hostpath
   hostPath:
-    path: "/data/nas/public/registry"
+    path: /data/nas/public/registry
+    type: DirectoryOrCreate
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
@@ -16,8 +26,9 @@ metadata:
   name: harbor-nas-pvc
   namespace: harbor
 spec:
-  accessModes: [ReadWriteOnce]
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: harbor-hostpath
   resources:
     requests:
       storage: 25Gi
-  volumeName: harbor-nas-pv
