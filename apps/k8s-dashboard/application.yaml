@@ -17,8 +17,9 @@ spec:
     - repoURL: https://github.com/PierreH2/homelab.git
       targetRevision: main
       path: apps/k8s-dashboard/prerequisite
-    - repoURL: https://github.com/kubernetes/dashboard.git
-      targetRevision: master
+    # Upstream repo is archived (moved to kubernetes-retired): pinned to the last released chart
+    - repoURL: https://github.com/kubernetes-retired/dashboard.git
+      targetRevision: kubernetes-dashboard-7.14.0
       path: charts/kubernetes-dashboard
       helm:
         releaseName: kubernetes-dashboard

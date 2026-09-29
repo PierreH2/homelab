@@ -8,7 +8,8 @@ spec:
 
   source:
     repoURL: https://github.com/baarde/cert-manager-webhook-ovh
-    targetRevision: main
+    # Pinned to the "Release 0.3.12" commit instead of tracking main
+    targetRevision: 9812ec42ef042cae7be395a13ef97d89ad1817e2
     path: deploy/cert-manager-webhook-ovh
 
   destination:

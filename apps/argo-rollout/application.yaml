@@ -19,9 +19,6 @@ spec:
         values: |
           dashboard:
             enabled: true
-    - repoURL: https://github.com/PierreH2/homelab.git
-      targetRevision: main
-      path: apps/argo-rollout/yaml
   syncPolicy:
     automated:
       prune: true

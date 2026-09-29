@@ -8,6 +8,9 @@ on:
         required: true
         default: './'
 
+permissions:
+  contents: read
+
 jobs:
   check-connection:
     # On utilise le label que tu as défini dans ton RunnerDeployment
@@ -23,9 +26,12 @@ jobs:
           echo "Date du jour : $(date)"
 
       - name: Install kubectl
-        uses: azure/setup-kubectl@v3
+        uses: azure/setup-kubectl@v4
         with:
           version: 'latest'
 
+      # L'input passe par une variable d'env pour éviter l'injection de commandes dans le shell
       - name: kubectl delete -f
-        run: kubectl delete -f "${{ github.event.inputs.path }}"
+        env:
+          MANIFEST_PATH: ${{ github.event.inputs.path }}
+        run: kubectl delete -f "$MANIFEST_PATH"

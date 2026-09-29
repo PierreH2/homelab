@@ -4,6 +4,8 @@
 *.tfstate
 *.tfstate.*
 *.plan
+*.tfplan
+plan.out
 *.terraform.lock.*
 
 *.key

@@ -1,10 +1,11 @@
 # Homelab
 
 This repository is a collection of manifests, charts, and scripts used to deploy
-and manage my Kubernetes homelab (K3S running on Arch Linux).
+and manage my Kubernetes homelab (K3S running on Fedora).
 
 ## Architecture
-The homelab is based on a single-node Kubernetes cluster (K3S) running on Arch Linux.
+The homelab is based on a single-node Kubernetes cluster (K3S) running on Fedora
+(migrated from Arch Linux for stability).
 Applications are deployed using GitOps via ArgoCD and exposed to the Internet through
 a Kubernetes API Gateway (Envoy), secured with TLS and OAuth2 authentication.
 
@@ -36,8 +37,12 @@ Persistent data is stored on a NAS mounted as a Samba subvolume on the host mach
 
 ## Repository Structure
 
-- `namespaces-apps/` — Application manifests (YAML)
-- `scripts/` — Utility scripts (deploy, certificates, port-forwarding)
+- `central-argocd/` — ArgoCD bootstrap (Helm values) and the root App-of-Apps `Application`
+- `apps/<name>/` — One folder per app: `application.yaml` (ArgoCD Application) plus
+  `values/`, `prerequisite/`, `config/` and `yaml/` sources it references
+- `scripts/` — Utility scripts (OS setup, K3S day/night timers, certificates, snapshots)
+- `post-mortem/` — Incident write-ups
+- `.github/workflows/` — Workflows running on the in-cluster self-hosted runners
 
 ---
 
@@ -66,10 +71,12 @@ This script:
 - Deploys K3S
 
 ### Step 2 — Bootstrap ArgoCD
-Deploy ArgoCD manually using Kustomize:
+Deploy ArgoCD manually using Helm:
 
 ```bash
-kubectl apply -k central-argocd/argocd/
+helm repo add argo https://argoproj.github.io/argo-helm
+helm install argo-cd argo/argo-cd --namespace argocd --create-namespace \
+  --version "7.*" -f central-argocd/argocd/values/values.yaml
 ```
 
 Wait for ArgoCD to become healthy, then retrieve the initial admin password:
@@ -81,19 +88,16 @@ kubectl -n argocd get secret argocd-initial-admin-secret \
 
 See `central-argocd/BOOTSTRAP.md` for more details.
 
-### Step 3 — Deploy the central ApplicationSet (App-of-Apps)
-Apply the central ApplicationSet that manages the entire stack via the App-of-Apps pattern:
+### Step 3 — Deploy the root Application (App-of-Apps)
+Apply the root `homelab-apps` Application that manages the entire stack via the App-of-Apps pattern:
 
 ```bash
 kubectl apply -f central-argocd/central-application.yaml
 ```
 
-This ApplicationSet deploys all applications in dependency order (using sync waves):
-- **Wave 0–1**: Infrastructure (MetalLB, Envoy Gateway)
-- **Wave 2–3**: Registry & policy (Harbor, Kyverno, cert-manager)
-- **Wave 4**: GitOps & rollouts (ArgoCD config, Argo Rollouts)
-- **Wave 9**: Auth & CI (Authentik, GitHub Runners)
-- **Wave 10+**: Observability & applications (Grafana, Prometheus, OAuth2 Proxy, Dashboard, Plex, etc.)
+It recursively picks up every `apps/*/application.yaml` and creates the child
+Applications. Child apps are not ordered with sync waves: they converge through
+ArgoCD retries.
 
 ArgoCD will continuously reconcile all apps from this repository.
 
