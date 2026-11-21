@@ -1,12 +1,15 @@
 # Homelab
 
 This repository is a collection of manifests, charts, and scripts used to deploy
-and manage my Kubernetes homelab (K3S running on Arch Linux).
+and manage my Kubernetes homelab (RKE2 running on Ubuntu Server).
 
 ## Architecture
-The homelab is based on a single-node Kubernetes cluster (K3S) running on Arch Linux.
-Applications are deployed using GitOps via ArgoCD and exposed to the Internet through
-a Kubernetes API Gateway (Envoy), secured with TLS and OAuth2 authentication.
+The homelab currently runs on a Beelink SER9 MAX with Ubuntu Server and uses a
+single-node RKE2 cluster. It was previously hosted on an Asus ROG laptop from 2022
+and ran K3S; that laptop is no longer part of the homelab.
+
+Applications are deployed using GitOps via ArgoCD and exposed to the Internet
+through a Kubernetes API Gateway (Envoy), secured with TLS and OAuth2 authentication.
 
 Persistent data is stored on a NAS mounted as a Samba subvolume on the host machine.
 
@@ -14,8 +17,8 @@ Persistent data is stored on a NAS mounted as a Samba subvolume on the host mach
 
 ## TO DO
 
-- [x] Install Arch Linux
-- [x] Install K3S
+- [x] Install Ubuntu Server
+- [x] Install RKE2
 - [x] Deploy a NAS for storage
 - [x] Deploy ArgoCD using Helm
 - [x] Deploy applications using GitOps
@@ -52,20 +55,7 @@ Persistent data is stored on a NAS mounted as a Samba subvolume on the host mach
 
 ## Quick Deployment Guide
 
-### Step 1 — Run the setup script
-Configure the OS and deploy K3S by running the setup script:
-
-```bash
-bash scripts/setup/setup-fedora-homelab.sh
-```
-
-This script:
-- Disables the GUI
-- Installs required packages (kubectl, Helm, Docker, etc.)
-- Creates the required directory structure
-- Deploys K3S
-
-### Step 2 — Bootstrap ArgoCD
+### Step 1 — Bootstrap ArgoCD
 Deploy ArgoCD manually using Kustomize:
 
 ```bash
@@ -81,7 +71,7 @@ kubectl -n argocd get secret argocd-initial-admin-secret \
 
 See `central-argocd/BOOTSTRAP.md` for more details.
 
-### Step 3 — Deploy the central ApplicationSet (App-of-Apps)
+### Step 2 — Deploy the central ApplicationSet (App-of-Apps)
 Apply the central ApplicationSet that manages the entire stack via the App-of-Apps pattern:
 
 ```bash
